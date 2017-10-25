@@ -1,8 +1,25 @@
+/**************************************************************************
+ Program:  Macro WideToLong
+ Library:  Web
+ Project:  NeighborhoodInfo DC
+ Author:   Sybil Mendonca
+ Created:  10/25/2017
+ Version:  SAS 9.4
+ Environment:  Windows
+ 
+ Description:  Transform NIDC data from wide to long.
+
+ Modifications:
+**************************************************************************/
+
+%include "L:\SAS\Inc\StdLocal.sas"; 
+
+** Define libraries **;
+%DCData_lib( Police )
+%DCData_lib( Vital )
+%DCData_lib( Web )
 
 
-libname input 'L:\Libraries\Police\Data';
-
-options mlogic mprint symbolgen nofmterr;
 *************************************;
 *************************************;
 *************************************;
@@ -16,6 +33,7 @@ options mlogic mprint symbolgen nofmterr;
 *************************************;
 *************************************;
 *************************************;
+
 
 %macro widetolong(dat, sortvar, TypeOfDat, StrtYr, EndYr);
 proc datasets library =work;
@@ -77,7 +95,7 @@ data &TypeOfDat._AllYears_Long;
 	start_date = mdy(01, 01, timeframe);
 	end_date = mdy(12, 31, timeframe); 
 run;
-ods csv file ="D:\DCData\Libraries\Police\Output\&TypeOfDat._AllYears_Long.csv";
+ods csv file ="D:\DCData\Libraries\Web\output\&TypeOfDat._AllYears_Long.csv";
 	proc print data = &TypeOfDat._AllYears_Long noobs;
 	run;
 ods csv close;
@@ -90,7 +108,7 @@ data &TypeOfDat._Long_Yr&i. ;
 	set &TypeOfDat._AllYears_Long;
 	where timeframe ="&i." ;
 run;
-ods csv file ="D:\DCData\Libraries\Police\Output\&TypeOfDat._Long_Yr&i..csv";
+ods csv file ="D:\DCData\Libraries\Web\output\&TypeOfDat._Long_Yr&i..csv";
 	proc print data =&TypeOfDat._Long_Yr&i. noobs;
 	run;
 ods csv close;
@@ -98,8 +116,10 @@ ods csv close;
 
 
 %mend;
-%widetolong(input.crimes_sum_wd12, WARD2012, WD12, 2000, 2016);
-%widetolong(input.Crimes_sum_anc02, ANC2002, ANC2002, 2000, 2016);
-%widetolong(input.Crimes_sum_anc12, ANC2012, ANC2012, 2000, 2016);
-%widetolong(input.Crimes_sum_bl00, GeoBlk2000, BL100, 2000, 2016);
+%widetolong(police.crimes_sum_wd12, WARD2012, WD12, 2000, 2016);
+%widetolong(police.Crimes_sum_anc02, ANC2002, ANC2002, 2000, 2016);
+%widetolong(police.Crimes_sum_anc12, ANC2012, ANC2012, 2000, 2016);
+/*%widetolong(police.Crimes_sum_bl00, GeoBlk2000, BL100, 2000, 2016);*/
+%widetolong(police.Crimes_sum_tr10, GEO2010, TR10, 2000, 2016);
+
 
