@@ -10,6 +10,11 @@
  Description:  Transform NIDC data from wide to long.
 
  Modifications:
+10/30/2017: 
+1)Added a new parameter COND in the macro widetolong. The parameter
+gives the user an option to either add a keep or a drop statement if needed.
+2) Added macro runquit. It stops processing SAS statements once it encounters an error.
+
 **************************************************************************/
 
 %include "L:\SAS\Inc\StdLocal.sas"; 
@@ -33,9 +38,14 @@
 *************************************;
 *************************************;
 *************************************;
+%macro runquit;
+  ; run; quit;
+  %if &syserr. ne 0 %then %do;
+     %abort cancel;
+  %end;
+%mend runquit;
 
-
-%macro widetolong(dat, sortvar, TypeOfDat, StrtYr, EndYr);
+%macro widetolong(dat, sortvar, TypeOfDat, StrtYr, EndYr, cond);
 proc datasets library =work;
 	delete &TypeOfDat. &TypeOfDat._o&StrtYr. - &TypeOfDat._o&EndYr. 
 			&TypeOfDat._AllYears_Long &TypeOfDat._Long_Yr&StrtYr. - &TypeOfDat._Long_Yr&EndYr. ;
@@ -46,9 +56,9 @@ run;
 
 *created a work dataset so that I do not overwrite the actual file;
 data &TypeOfDat.;
-	set &dat.;
+	set &dat. &cond.;
 run;
-
+%runquit;
 proc sql noprint;
 	*Variable names without the year component are stored in individual macro variables var_listi;
    select distinct  substr(name,1, length(name)-5)
@@ -59,15 +69,17 @@ proc sql noprint;
 	*No of variables: The automatic macro variable SQLOBS is assigned a value after the SQL SELECT statement executes.;
 	%let nu= &sqlobs. ;
 quit;
-
+%runquit;
 %put &nu. ;
 
-%do j = 1 %to &nu. ;
+
+ %do j = 1 %to &nu. ;
   %put "Variable we are processing:" &&var_list&j.. ; 
 
   	proc sort data =&TypeOfDat.;
 		by &sortvar.;
 	run;
+	%runquit;
 	data &TypeOfDat._o&j.(keep = &Sortvar. &&var_list&j.. timeframe ) ;
  	set &TypeOfDat.(keep = &Sortvar. &&var_list&j.._&Strtyr. -&&var_list&j.._&Endyr.) ;
  	by &Sortvar.;
@@ -85,6 +97,7 @@ quit;
 			output;
 	end;
 	run;
+	%runquit;
 %end;
 
 *Merge all the variable datasets together;
@@ -108,15 +121,28 @@ data &TypeOfDat._Long_Yr&i. ;
 	set &TypeOfDat._AllYears_Long;
 	where timeframe ="&i." ;
 run;
+%runquit;
 ods csv file ="D:\DCData\Libraries\Web\output\&TypeOfDat._Long_Yr&i..csv";
 	proc print data =&TypeOfDat._Long_Yr&i. noobs;
 	run;
 ods csv close;
 %end;
 
-
+proc datasets library =work;
+	delete &TypeOfDat._o1 - &TypeOfDat._o&nu.  ;
+run;
+quit;
 %mend;
-%widetolong(police.crimes_sum_wd12, WARD2012, WD12, 2000, 2016);
+
+%widetolong(police.crimes_sum_wd12, WARD2012, WD12, 2000, 2016, %str((drop= Crimes_pt1_2000 - Crimes_pt1_2016)) );
+%widetolong(police.crimes_sum_wd12, WARD2012, WD12, 2000, 2016, %str((keep=  Ward2012 Crimes_pt1_2000 - Crimes_pt1_2016)) );
+%widetolong(police.crimes_sum_wd12, WARD2012, WD12, 2000, 2016,  );
+
+/**example of how runquit works.;*/
+/**The Sortvar variable is not mentioned in the keep statemnet. This should result in the program failing; */
+/*%widetolong(police.crimes_sum_wd12, WARD2012, WD12, 2000, 2016, %str((keep=  Crimes_pt1_2000 - Crimes_pt1_2016)) );*/
+
+
 %widetolong(police.Crimes_sum_anc02, ANC2002, ANC2002, 2000, 2016);
 %widetolong(police.Crimes_sum_anc12, ANC2012, ANC2012, 2000, 2016);
 /*%widetolong(police.Crimes_sum_bl00, GeoBlk2000, BL100, 2000, 2016);*/
