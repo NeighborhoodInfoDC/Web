@@ -45,7 +45,7 @@ gives the user an option to either add a keep or a drop statement if needed.
   %end;
 %mend runquit;
 
-%macro widetolong (library, indata, sortvar, TypeOfDat, StrtYr, EndYr, keepvars);
+%macro widetolong (library, datacat, indata, sortvar, TypeOfDat, StrtYr, EndYr, keepvars);
 proc datasets library =work;
 	delete &TypeOfDat. &TypeOfDat._o&StrtYr. - &TypeOfDat._o&EndYr. 
 			&TypeOfDat._AllYears_Long &TypeOfDat._Long_Yr&StrtYr. - &TypeOfDat._Long_Yr&EndYr. ;
@@ -128,7 +128,7 @@ data &TypeOfDat._AllYears_Long;
 	start_date = mdy(01, 01, timeframe);
 	end_date = mdy(12, 31, timeframe); 
 run;
-ods csv file ="D:\DCData\Libraries\Web\output\&TypeOfDat._AllYears_Long.csv";
+ods csv file ="&_dcdata_default_path.\web\output\&TypeOfDat.\&datacat._&TypeOfDat._AllYears.csv";
 	proc print data = &TypeOfDat._AllYears_Long noobs;
 	run;
 ods csv close;
@@ -142,7 +142,7 @@ data &TypeOfDat._Long_Yr&i. ;
 	where timeframe ="&i." ;
 run;
 %runquit;
-ods csv file ="D:\DCData\Libraries\Web\output\&TypeOfDat._Long_Yr&i..csv";
+ods csv file ="&_dcdata_default_path.\web\output\&TypeOfDat.\&datacat._&TypeOfDat._&i..csv";
 	proc print data =&TypeOfDat._Long_Yr&i. noobs;
 	run;
 ods csv close;
@@ -157,8 +157,8 @@ quit;
 
 
 
-%widetolong(police, crimes_sum_wd12, WARD2012, WD12, 2000, 2016, crimes_pt1 Crimes_pt1_property Crimes_pt1_violent );
-%widetolong(police, crimes_sum_anc12, ANC2012, ANC2012, 2000, 2016, crimes_pt1 Crimes_pt1_property Crimes_pt1_violent );
+%widetolong(police, crime, crimes_sum_wd12, WARD2012, WD12, 2000, 2016, crimes_pt1 Crimes_pt1_property Crimes_pt1_violent );
+%widetolong(police, crime, crimes_sum_anc12, ANC2012, ANC2012, 2000, 2016, crimes_pt1 Crimes_pt1_property Crimes_pt1_violent );
 
 
 
