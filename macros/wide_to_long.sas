@@ -45,7 +45,7 @@ gives the user an option to either add a keep or a drop statement if needed.
   %end;
 %mend runquit;
 
-%macro widetolong(dat, sortvar, TypeOfDat, StrtYr, EndYr, cond);
+%macro widetolong (library, indata, sortvar, TypeOfDat, StrtYr, EndYr, keepvars);
 proc datasets library =work;
 	delete &TypeOfDat. &TypeOfDat._o&StrtYr. - &TypeOfDat._o&EndYr. 
 			&TypeOfDat._AllYears_Long &TypeOfDat._Long_Yr&StrtYr. - &TypeOfDat._Long_Yr&EndYr. ;
@@ -56,8 +56,28 @@ run;
 
 *created a work dataset so that I do not overwrite the actual file;
 data &TypeOfDat.;
-	set &dat. &cond.;
+	set &library..&indata. ; 
+	keep &sortvar.;
+
+	%macro keeploop();
+		%let varlist = &keepvars.;
+			%let i = 1;
+				%do %until (%scan(&varlist,&i,' ')=);
+					%let var=%scan(&varlist,&i,' ');
+			keep &var._&StrtYr. - &var._&EndYr. ;
+		%let i=%eval(&i + 1);
+				%end;
+			%let i = 1;
+				%do %until (%scan(&varlist,&i,' ')=);
+					%let var=%scan(&varlist,&i,' ');
+		%let i=%eval(&i + 1);
+				%end;
+	%mend keeploop;
+	%keeploop;
+
+
 run;
+
 %runquit;
 proc sql noprint;
 	*Variable names without the year component are stored in individual macro variables var_listi;
@@ -132,20 +152,14 @@ proc datasets library =work;
 	delete &TypeOfDat._o1 - &TypeOfDat._o&nu.  ;
 run;
 quit;
-%mend;
-
-%widetolong(police.crimes_sum_wd12, WARD2012, WD12, 2000, 2016, %str((drop= Crimes_pt1_2000 - Crimes_pt1_2016)) );
-%widetolong(police.crimes_sum_wd12, WARD2012, WD12, 2000, 2016, %str((keep=  Ward2012 Crimes_pt1_2000 - Crimes_pt1_2016)) );
-%widetolong(police.crimes_sum_wd12, WARD2012, WD12, 2000, 2016,  );
-
-/**example of how runquit works.;*/
-/**The Sortvar variable is not mentioned in the keep statemnet. This should result in the program failing; */
-/*%widetolong(police.crimes_sum_wd12, WARD2012, WD12, 2000, 2016, %str((keep=  Crimes_pt1_2000 - Crimes_pt1_2016)) );*/
+%mend widetolong;
 
 
-%widetolong(police.Crimes_sum_anc02, ANC2002, ANC2002, 2000, 2016);
-%widetolong(police.Crimes_sum_anc12, ANC2012, ANC2012, 2000, 2016);
-/*%widetolong(police.Crimes_sum_bl00, GeoBlk2000, BL100, 2000, 2016);*/
-%widetolong(police.Crimes_sum_tr10, GEO2010, TR10, 2000, 2016);
+
+
+%widetolong(police, crimes_sum_wd12, WARD2012, WD12, 2000, 2016, crimes_pt1 Crimes_pt1_property Crimes_pt1_violent );
+%widetolong(police, crimes_sum_anc12, ANC2012, ANC2012, 2000, 2016, crimes_pt1 Crimes_pt1_property Crimes_pt1_violent );
+
+
 
 
