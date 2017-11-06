@@ -45,15 +45,59 @@ gives the user an option to either add a keep or a drop statement if needed.
   %end;
 %mend runquit;
 
-%macro widetolong (library, datacat, indata, sortvar, TypeOfDat, StrtYr, EndYr, keepvars);
+%macro widetolong (library, datacat, indata, source_geo, StrtYr, EndYr, keepvars);
 proc datasets library =work;
 	delete &TypeOfDat. &TypeOfDat._o&StrtYr. - &TypeOfDat._o&EndYr. 
 			&TypeOfDat._AllYears_Long &TypeOfDat._Long_Yr&StrtYr. - &TypeOfDat._Long_Yr&EndYr. ;
 run;
 
+ %if %upcase( &source_geo ) = TR00 %then %do;
+     %let sortvar = GEO2000;
+     %let TypeOfDat = TR00;
+  %end;
+  %else %if %upcase( &source_geo ) = TR10 %then %do;
+     %let sortvar = GEO2010;
+     %let TypeOfDat = TR10;
+  %end;
+  %else %if %upcase( &source_geo ) = ANC2002 %then %do;
+     %let sortvar = ANC2002;
+     %let TypeOfDat = ANC02;
+  %end;
+  %else %if %upcase( &source_geo ) = ANC2012 %then %do;
+     %let sortvar = ANC2012;
+     %let TypeOfDat = ANC12;
+  %end;
+  %else %if %upcase( &source_geo ) = CITY %then %do;
+     %let sortvar = CITY;
+     %let TypeOfDat = CITY;
+  %end;
+  %else %if %upcase( &source_geo ) = CLTR00 %then %do;
+     %let sortvar = CLUSTER_TR2000;
+     %let TypeOfDat = CLTR00;
+  %end;
+  %else %if %upcase( &source_geo ) = PSA04 %then %do;
+     %let sortvar = PSA2004;
+     %let TypeOfDat = PSA04;
+  %end;
+  %else %if %upcase( &source_geo ) = PAS12 %then %do;
+     %let sortvar = PSA2012;
+     %let TypeOfDat = PSA12;
+  %end;
+  %else %if %upcase( &source_geo ) = WD02 %then %do;
+     %let sortvar = WARD2002;
+     %let TypeOfDat = WD02;
+  %end;
+  %else %if %upcase( &source_geo ) = WD12 %then %do;
+     %let sortvar = WARD2012;
+     %let TypeOfDat = WD12;
+  %end;
+  %else %do;
+    %err_mput( macro= ACS_summary_geo_source, msg=Geograpy &source_geo is not supported. )
+  %end;
+/*
 %let sortvar   = %upcase(&sortvar.);
 %let TypeOfDat = %upcase(&TypeOfDat.);
-
+*/
 *created a work dataset so that I do not overwrite the actual file;
 data &TypeOfDat.;
 	set &library..&indata. ; 
@@ -157,8 +201,8 @@ quit;
 
 
 
-%widetolong(police, crime, crimes_sum_wd12, WARD2012, WD12, 2000, 2016, crimes_pt1 Crimes_pt1_property Crimes_pt1_violent );
-%widetolong(police, crime, crimes_sum_anc12, ANC2012, ANC2012, 2000, 2016, crimes_pt1 Crimes_pt1_property Crimes_pt1_violent );
+%widetolong(police, crime, crimes_sum_wd12, WD12, 2000, 2016, crimes_pt1 Crimes_pt1_property Crimes_pt1_violent );
+%widetolong(police, crime, crimes_sum_anc12, ANC2012, 2000, 2016, crimes_pt1 Crimes_pt1_property Crimes_pt1_violent );
 
 
 
