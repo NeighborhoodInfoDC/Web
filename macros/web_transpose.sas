@@ -14,9 +14,11 @@
 1)Added a new parameter COND in the macro widetolong. The parameter
 gives the user an option to either add a keep or a drop statement if needed. -SM
 2) Added macro runquit. It stops processing SAS statements once it encounters an error. -SM
+
+11/07/17
 3) Cleaned up the file and renamed some macro variables for NIDC clarity -RP
 4) Changed macro to output transposed file as xxx_sum_geo_long. Final variable creation
-and CSV export will take place in the accompanying programs. 
+and CSV export will take place in the accompanying programs. -RP
 
 **************************************************************************/
 
@@ -31,10 +33,7 @@ and CSV export will take place in the accompanying programs.
 
 
 %macro web_transpose (library, datacat, indata, source_geo, StrtYr, EndYr, keepvars);
-proc datasets library =work;
-	delete &TypeOfDat. &TypeOfDat._o&StrtYr. - &TypeOfDat._o&EndYr. 
-			&TypeOfDat._AllYears_Long &TypeOfDat._Long_Yr&StrtYr. - &TypeOfDat._Long_Yr&EndYr. ;
-run;
+
 
 /* Define macro variables for this macro based on NIDC geography */
  %if %upcase( &source_geo ) = TR00 %then %do;
@@ -78,7 +77,7 @@ run;
      %let TypeOfDat = WD12;
   %end;
   %else %do;
-    %err_mput( macro= ACS_summary_geo_source, msg=Geograpy &source_geo is not supported. )
+    %err_mput( macro= web_transpose, msg=Geograpy &source_geo is not supported. )
   %end;
 
 
