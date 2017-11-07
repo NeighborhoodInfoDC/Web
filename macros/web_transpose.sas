@@ -44,11 +44,11 @@ and CSV export will take place in the accompanying programs. -RP
      %let sortvar = GEO2010;
      %let TypeOfDat = TR10;
   %end;
-  %else %if %upcase( &source_geo ) = ANC2002 %then %do;
+  %else %if %upcase( &source_geo ) = ANC02 %then %do;
      %let sortvar = ANC2002;
      %let TypeOfDat = ANC02;
   %end;
-  %else %if %upcase( &source_geo ) = ANC2012 %then %do;
+  %else %if %upcase( &source_geo ) = ANC12 %then %do;
      %let sortvar = ANC2012;
      %let TypeOfDat = ANC12;
   %end;
@@ -64,7 +64,7 @@ and CSV export will take place in the accompanying programs. -RP
      %let sortvar = PSA2004;
      %let TypeOfDat = PSA04;
   %end;
-  %else %if %upcase( &source_geo ) = PAS12 %then %do;
+  %else %if %upcase( &source_geo ) = PSA12 %then %do;
      %let sortvar = PSA2012;
      %let TypeOfDat = PSA12;
   %end;
@@ -75,6 +75,10 @@ and CSV export will take place in the accompanying programs. -RP
   %else %if %upcase( &source_geo ) = WD12 %then %do;
      %let sortvar = WARD2012;
      %let TypeOfDat = WD12;
+  %end;
+  %else %if %upcase( &source_geo ) = ZIP %then %do;
+     %let sortvar = ZIP;
+     %let TypeOfDat = ZIP;
   %end;
   %else %do;
     %err_mput( macro= web_transpose, msg=Geograpy &source_geo is not supported. )
