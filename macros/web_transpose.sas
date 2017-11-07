@@ -14,17 +14,11 @@
 1)Added a new parameter COND in the macro widetolong. The parameter
 gives the user an option to either add a keep or a drop statement if needed. -SM
 2) Added macro runquit. It stops processing SAS statements once it encounters an error. -SM
+3) Cleaned up the file and renamed some macro variables for NIDC clarity -RP
+4) Changed macro to output transposed file as xxx_sum_geo_long. Final variable creation
+and CSV export will take place in the accompanying programs. 
 
 **************************************************************************/
-
-%include "L:\SAS\Inc\StdLocal.sas"; 
-
-** Define libraries **;
-%DCData_lib( Police )
-%DCData_lib( Vital )
-%DCData_lib( TANF )
-%DCData_lib( Web )
-
 
 
 %macro runquit;
@@ -33,6 +27,7 @@ gives the user an option to either add a keep or a drop statement if needed. -SM
      %abort cancel;
   %end;
 %mend runquit;
+
 
 
 %macro web_transpose (library, datacat, indata, source_geo, StrtYr, EndYr, keepvars);
@@ -154,48 +149,17 @@ quit;
 %end;
 
 /*Merge all the variable datasets together*/
-data &TypeOfDat._AllYears_Long;
+data &indata._&TypeOfDat._long;
 	format start_date end_date date9. ;
 	merge &TypeOfDat._o1 -&TypeOfDat._o&nu. ;
 	by &Sortvar.;
 	start_date = mdy(01, 01, timeframe);
 	end_date = mdy(12, 31, timeframe); 
 run;
-/* Output all years CSV */
-ods csv file ="&_dcdata_default_path.\web\output\&datacat.\&TypeOfDat.\&datacat._&TypeOfDat._AllYears.csv";
-	proc print data = &TypeOfDat._AllYears_Long noobs;
-	run;
-ods csv close;
 
 
 
-/*Subset datasets by year */
-%do i = &StrtYr. %to &EndYr.;
-data &TypeOfDat._Long_Yr&i. ;
-	set &TypeOfDat._AllYears_Long;
-	where timeframe ="&i." ;
-run;
-%runquit;
-/* Output each year as a separate CSV */
-ods csv file ="&_dcdata_default_path.\web\output\&datacat.\&TypeOfDat.\&datacat._&TypeOfDat._&i..csv";
-	proc print data =&TypeOfDat._Long_Yr&i. noobs;
-	run;
-ods csv close;
-%end;
-
-proc datasets library =work;
-	delete &TypeOfDat._o1 - &TypeOfDat._o&nu.  ;
-run;
-quit;
 %mend web_transpose;
 
 
 
-
-%web_transpose(police, crime, crimes_sum, WD12, 2000, 2016, crimes_pt1 Crimes_pt1_property Crimes_pt1_violent );
-%web_transpose(police, crime, crimes_sum, ANC2012, 2000, 2016, crimes_pt1 Crimes_pt1_property Crimes_pt1_violent );
-
-%web_transpose(vital, vital, births_sum_wd12, WD12, 2008, 2011, births_total Births_white Births_black);
-
-%web_transpose(tanf, tanf, tanf_sum_wd12, WD12, 2010, 2015, Tanf_client Tanf_fulpart);
-%web_transpose(tanf, fs, fs_sum_wd12, WD12, 2010, 2015, fs_client fs_fulpart);
