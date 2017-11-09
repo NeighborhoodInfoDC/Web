@@ -14,11 +14,9 @@
 1)Added a new parameter COND in the macro widetolong. The parameter
 gives the user an option to either add a keep or a drop statement if needed. -SM
 2) Added macro runquit. It stops processing SAS statements once it encounters an error. -SM
-
-11/07/17
 3) Cleaned up the file and renamed some macro variables for NIDC clarity -RP
 4) Changed macro to output transposed file as xxx_sum_geo_long. Final variable creation
-and CSV export will take place in the accompanying programs. -RP
+and CSV export will take place in the accompanying programs. 
 
 **************************************************************************/
 
@@ -33,7 +31,6 @@ and CSV export will take place in the accompanying programs. -RP
 
 
 %macro web_transpose (library, datacat, indata, source_geo, StrtYr, EndYr, keepvars);
-
 
 /* Define macro variables for this macro based on NIDC geography */
  %if %upcase( &source_geo ) = TR00 %then %do;
@@ -77,8 +74,8 @@ and CSV export will take place in the accompanying programs. -RP
      %let TypeOfDat = WD12;
   %end;
   %else %if %upcase( &source_geo ) = ZIP %then %do;
-     %let sortvar = ZIP;
-     %let TypeOfDat = ZIP;
+     %let sortvar = WARD2012;
+     %let TypeOfDat = WD12;
   %end;
   %else %do;
     %err_mput( macro= web_transpose, msg=Geograpy &source_geo is not supported. )
@@ -151,15 +148,23 @@ quit;
 	%runquit;
 %end;
 
+
 /*Merge all the variable datasets together*/
 data &indata._&TypeOfDat._long;
 	format start_date end_date date9. ;
 	merge &TypeOfDat._o1 -&TypeOfDat._o&nu. ;
-	by &Sortvar.;
+	by &Sortvar. timeframe;
 	start_date = mdy(01, 01, timeframe);
 	end_date = mdy(12, 31, timeframe); 
+	&sortvar._nf = &sortvar.;
 run;
 
+
+/* Remove the NIDC format for one of the geo vars */
+proc datasets lib=work;
+	modify &indata._&TypeOfDat._long;
+	format &sortvar._nf;
+run;
 
 
 %mend web_transpose;
