@@ -74,8 +74,8 @@ and CSV export will take place in the accompanying programs.
      %let TypeOfDat = WD12;
   %end;
   %else %if %upcase( &source_geo ) = ZIP %then %do;
-     %let sortvar = WARD2012;
-     %let TypeOfDat = WD12;
+     %let sortvar = ZIP;
+     %let TypeOfDat = ZIP;
   %end;
   %else %do;
     %err_mput( macro= web_transpose, msg=Geograpy &source_geo is not supported. )
@@ -164,6 +164,7 @@ run;
 proc datasets lib=work;
 	modify &indata._&TypeOfDat._long;
 	format &sortvar._nf;
+	label &sortvar._nf = "Unformatted geography";
 run;
 
 
