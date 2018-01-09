@@ -28,6 +28,18 @@
 
 %let inc_dollar_yr = 2016;
 
+
+
+/* Export exmployment data */
+%export_employment (geo2010);
+%export_employment (city);
+%export_employment (wd12);
+%export_employment (anc12);
+%export_employment (cltr00);
+%export_employment (psa12);
+%export_employment (zip);
+
+
 /* Export housing data */
 %export_housing (geo2010);
 %export_housing (city);
@@ -37,6 +49,15 @@
 %export_housing (psa12);
 %export_housing (zip);
 
+
+/* Export connection data */
+%export_connection (geo2010);
+%export_connection (city);
+%export_connection (wd12);
+%export_connection (anc12);
+%export_connection (cltr00);
+%export_connection (psa12);
+%export_connection (zip);
 
 
 /* End of program */

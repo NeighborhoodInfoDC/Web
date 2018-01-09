@@ -145,7 +145,7 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
     %Pct_calc( var=PctOwnerOccupiedHsgUnits, label=Homeownership rate (%), num=NumOwnerOccupiedHsgUnits, den=NumOccupiedHsgUnits, years=1980 1990 2000 &acsyr. )
     
 
-	keep geo2010_nf geo2010 start_date end_date timeframe
+	keep &geo._nf &geo. start_date end_date timeframe
 		 NumOccupiedHsgUnits_&ncdbyr. PctSameHouse5YearsAgo_&ncdbyr. PctVacantHsgUnitsForRent_&ncdbyr. PctOwnerOccupiedHsgUnits_&ncdbyr.;
 
 	rename 	NumOccupiedHsgUnits_&ncdbyr. =	NumOccupiedHsgUnits
@@ -239,13 +239,6 @@ ods csv close;
 
 %mend export_housing;
 
-%export_housing (geo2010);
-%export_housing (city);
-%export_housing (wd12);
-%export_housing (anc12);
-%export_housing (cltr00);
-%export_housing (psa12);
-%export_housing (zip);
 
 
 

@@ -216,13 +216,6 @@ ods csv close;
 
 %mend export_employment;
 
-%export_employment (geo2010);
-%export_employment (city);
-%export_employment (wd12);
-%export_employment (anc12);
-%export_employment (cltr00);
-%export_employment (psa12);
-%export_employment (zip);
 
 
 /* End Macro */
