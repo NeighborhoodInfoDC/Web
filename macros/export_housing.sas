@@ -186,8 +186,53 @@ data dcdata_&topic.&geosuf.;
 run;
 
 
+data price_change&geosuf.;
+	set realprop.sales_sum&geosuf.;
+
+	%let rsales_end_yr = 2016;
+
+	%let rsales_b1yr = %eval( &rsales_end_yr - 1 );
+    %let rsales_b5yr = %eval( &rsales_end_yr - 5 );
+    %let rsales_b10yr = %eval( &rsales_end_yr - 10 );
+    
+    PctAnnChgRMPriceSf_1yr = 100 * %annchg( r_mprice_sf_&rsales_b1yr, r_mprice_sf_&rsales_end_yr, 1 );
+    PctAnnChgRMPriceSf_5yr = 100 * %annchg( r_mprice_sf_&rsales_b5yr, r_mprice_sf_&rsales_end_yr, 5 );
+    PctAnnChgRMPriceSf_10yr = 100 * %annchg( r_mprice_sf_&rsales_b10yr, r_mprice_sf_&rsales_end_yr, 10 );
+
+    if PctAnnChgRMPriceSf_1yr = . then PctAnnChgRMPriceSf_1yr = .i;
+    if PctAnnChgRMPriceSf_5yr = . then PctAnnChgRMPriceSf_5yr = .i;
+    if PctAnnChgRMPriceSf_10yr = . then PctAnnChgRMPriceSf_10yr = .i;
+run;
+
+%macro priceloop (y,from,to,f,t);
+data PctAnnChgRMPriceSf_&y.&geosuf.;
+	length timeframe $ 15;
+	set price_change&geosuf.;
+
+	&geo._nf = &geo.;
+
+	%if %upcase( &source_geo ) = GEO2010 %then %do;
+	ucounty=substr(geo2010,1,5);
+	%define_dcmetro (countyvar = ucounty);
+	%end;
+	
+	timeframe = "&from. to &to." ;
+
+	/* Populate start and end dates */
+	start_date = "01jan&f."d;
+	end_date = "31dec&t."d;
+	format start_date end_date date9. ;
+
+	keep &geo._nf &geo. start_date end_date timeframe PctAnnChgRMPriceSf_&y.yr;
+%mend priceloop;
+%priceloop(1,2015,2016,15,16);
+%priceloop(5,2011,2016,11,16);
+%priceloop(10,2006,2016,06,16);
+
+
 data &topic.&geosuf.;
-	set Ncdb_acs_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. Ncdb_1990_&topic.&geosuf. dcdata_&topic.&geosuf.;
+	set Ncdb_acs_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. Ncdb_1990_&topic.&geosuf. dcdata_&topic.&geosuf.
+		PctAnnChgRMPriceSf_1&geosuf. PctAnnChgRMPriceSf_5&geosuf. PctAnnChgRMPriceSf_10&geosuf.;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
 	ucounty=substr(geo2010,1,5);
@@ -206,13 +251,16 @@ data &topic.&geosuf.;
 			PctOwnerOccupiedHU_m = "Homeownership rate (%) MOE"
 			mprice_sf = "Single-Family Homes, Median sales price"
 			sales_sf = "Single-Family Homes, Number of sales"
-			MedianMrtgInc1_4m_adj = "MedianMrtgInc1_4m_adj"
+			MedianMrtgInc1_4m_adj = "Median borrower income"
 			NumMrtgOrigHomePurchPerUnit = "Loans per 1,000 housing units" 
 			PctSubprimeConvOrigHomePur = "% subprime loans" 
 			forecl_ssl_1Kpcl_sf_condo = "Foreclosure notice rate per 1,000" 
 			forecl_ssl_sf_condo = "SF homes/condos receiving foreclosure notice" 
 			trustee_ssl_1Kpcl_sf_condo = "Trustee deed sale rate per 1,000" 
 			trustee_ssl_sf_condo = "SF homes/condos receiving trustee deed sale notice"
+			PctAnnChgRMPriceSf_1yr = "% annual change median price past 1 year"
+			PctAnnChgRMPriceSf_5yr = "% annual change median price past 5 years"
+			PctAnnChgRMPriceSf_10yr = "% annual change median price past 10 years"
 		  ;
 run;
 

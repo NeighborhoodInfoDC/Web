@@ -20,12 +20,13 @@
 
 /***** Update the let statements for the data you want to create CSV files for *****/
 
-%let library = acs; /* Library of the summary data to be transposed */
-%let outfolder = acs; /* Name of folder where output CSV will be saved */
 %let acsyr = 2012_16; /* Year range for ACS data */
 %let y_lbl = %sysfunc( translate( &acsyr., '-', '_' ) );
+
+** Last year of ACS data for inflation adjustment **;
 %let acs_infl_yr = 2016;
 
+** Inflation base year **;
 %let inc_dollar_yr = 2016;
 
 
@@ -83,6 +84,17 @@
 %export_income (cltr00);
 %export_income (psa12);
 %export_income (zip);
+
+
+/* Export education data */
+%include "&_dcdata_default_path.\Schools\Prog\Schools_forweb.sas";
+%export_education (geo2010);
+%export_education (city);
+%export_education (wd12);
+%export_education (anc12);
+%export_education (cltr00);
+%export_education (psa12);
+%export_education (zip);
 
 
 /* End of program */
