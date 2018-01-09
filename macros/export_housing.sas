@@ -10,9 +10,7 @@
 
 **************************************************************************/
 
-%include "&_dcdata_default_path.\realprop\prog\sales_forweb.sas";
-%include "&_dcdata_default_path.\hmda\prog\hmda_forweb.sas";
-%include "&_dcdata_default_path.\rod\prog\foreclosure_forweb.sas";
+
 
 
 %macro export_housing (source_geo);

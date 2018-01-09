@@ -29,6 +29,15 @@
 %let inc_dollar_yr = 2016;
 
 
+/* Export population data */
+%export_population (geo2010);
+%export_population (city);
+%export_population (wd12);
+%export_population (anc12);
+%export_population (cltr00);
+%export_population (psa12);
+%export_population (zip);
+
 
 /* Export exmployment data */
 %export_employment (geo2010);
@@ -41,6 +50,10 @@
 
 
 /* Export housing data */
+%include "&_dcdata_default_path.\realprop\prog\sales_forweb.sas";
+%include "&_dcdata_default_path.\hmda\prog\hmda_forweb.sas";
+%include "&_dcdata_default_path.\rod\prog\foreclosure_forweb.sas";
+
 %export_housing (geo2010);
 %export_housing (city);
 %export_housing (wd12);
