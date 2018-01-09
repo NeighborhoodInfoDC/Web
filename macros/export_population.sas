@@ -218,7 +218,7 @@ data acs_all&geosuf.;
 	set &acsin.; 
 run;
 
-data change_&topic.&geosuf.;
+data ch_&topic.&geosuf.;
 	merge acs_all&geosuf. &ncdb00in.;
 	by &geo.;
 
@@ -233,9 +233,9 @@ data change_&topic.&geosuf.;
 run;
 
 
-data change_&topic.&geosuf._1990_2000;
+data ch_&topic.&geosuf._1990_2000;
 	length timeframe $ 15;
-	set change_&topic.&geosuf.;
+	set ch_&topic.&geosuf.;
 
 	/* Unformatted tract ID */
 	&geo._nf = &geo.;
@@ -261,9 +261,9 @@ data change_&topic.&geosuf._1990_2000;
 run;
 
 
-data change_&topic.&geosuf._2000_ACS;
+data ch_&topic.&geosuf._2000_ACS;
 	length timeframe $ 15;
-	set change_&topic.&geosuf.;
+	set ch_&topic.&geosuf.;
 
 	/* Unformatted tract ID */
 	&geo._nf = &geo.;
@@ -294,7 +294,7 @@ run;
 
 
 data &topic.&geosuf.;
-	set Ncdb_acs_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. Ncdb_1990_&topic.&geosuf. change_&topic.&geosuf._2000_ACS change_&topic.&geosuf._1990_2000;
+	set Ncdb_acs_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. Ncdb_1990_&topic.&geosuf. ch_&topic.&geosuf._2000_ACS ch_&topic.&geosuf._1990_2000;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
 	ucounty=substr(geo2010,1,5);

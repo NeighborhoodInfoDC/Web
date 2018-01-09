@@ -73,4 +73,16 @@
 %export_connection (zip);
 
 
+/* Export income data */
+%include "&_dcdata_default_path.\tanf\prog\TANF_forweb.sas";
+%include "&_dcdata_default_path.\tanf\prog\FS_forweb.sas";
+%export_income (geo2010);
+%export_income (city);
+%export_income (wd12);
+%export_income (anc12);
+%export_income (cltr00);
+%export_income (psa12);
+%export_income (zip);
+
+
 /* End of program */
