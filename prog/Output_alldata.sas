@@ -97,4 +97,20 @@
 %export_education (zip);
 
 
+/* Export health data */
+%include "&_dcdata_default_path.\Vital\Prog\Births_forweb.sas";
+%export_health (geo2010);
+%export_health (city);
+%export_health (wd12);
+%export_health (anc12);
+%export_health (cltr00);
+%export_health (psa12);
+%export_health (zip);
+
+
+/* Export safety data */
+%include "&_dcdata_default_path.\Police\Prog\Crimes_forweb.sas";
+
+
+
 /* End of program */
