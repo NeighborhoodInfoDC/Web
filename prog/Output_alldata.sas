@@ -110,7 +110,13 @@
 
 /* Export safety data */
 %include "&_dcdata_default_path.\Police\Prog\Crimes_forweb.sas";
-
+%export_safety (geo2010);
+%export_safety (city);
+%export_safety (wd12);
+%export_safety (anc12);
+%export_safety (cltr00);
+%export_safety (psa12);
+%export_safety (zip);
 
 
 /* End of program */
