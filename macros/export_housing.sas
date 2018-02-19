@@ -266,7 +266,30 @@ run;
 
 
 /* Create metadata for the dataset */
-proc contents data = &topic.&geosuf. out = &topic.&geosuf._metadata noprint;
+proc contents data = &topic.&geosuf. out = &topic.&geosuf._metadata_order noprint;
+run;
+
+data &topic.&geosuf._metadata;
+	set &topic.&geosuf._metadata_order;
+
+	if name = "NumOccupiedHsgUnits" then weborder = 1;
+	else if name = "PctSameHouse5YearsAgo" then weborder = 2;
+	else if name = "PctVacantHsgUnitsForRent" then weborder = 3;
+	else if name = "PctVacantHUForRent_m" then weborder = 4;
+	else if name = "PctOwnerOccupiedHsgUnits" then weborder = 5;
+	else if name = "PctOwnerOccupiedHU_m" then weborder = 6;
+	else if name = "sales_sf" then weborder = 7;
+	else if name = "mprice_sf" then weborder = 8;
+	else if name = "PctAnnChgRMPriceSf_10yr" then weborder = 9;
+	else if name = "PctAnnChgRMPriceSf_5yr" then weborder = 10;
+	else if name = "PctAnnChgRMPriceSf_1yr" then weborder = 11;
+	else if name = "NumMrtgOrigHomePurchPerUnit" then weborder = 12;
+	else if name = "MedianMrtgInc1_4m_adj" then weborder = 13;
+	else if name = "PctSubprimeConvOrigHomePur" then weborder = 14;
+	else if name = "forecl_ssl_sf_condo" then weborder = 15;
+	else if name = "forecl_ssl_1Kpcl_sf_condo" then weborder = 16;
+	else if name = "trustee_ssl_sf_condo" then weborder = 17;
+	else if name = "trustee_ssl_1Kpcl_sf_condo" then weborder = 18;
 run;
 
 /* Output the metadata */

@@ -201,7 +201,20 @@ run;
 
 
 /* Create metadata for the dataset */
-proc contents data = &topic.&geosuf. out = &topic.&geosuf._metadata noprint;
+proc contents data = &topic.&geosuf. out = &topic.&geosuf._metadata_order noprint;
+run;
+
+data &topic.&geosuf._metadata;
+	set &topic.&geosuf._metadata_order;
+
+	if name = "Pct25andOverWoutHS" then weborder = 1;
+	else if name = "Pct25andOverWoutHS_m" then weborder = 2;
+	else if name = "aud" then weborder = 3;
+	else if name = "aud_charter" then weborder = 4;
+	else if name = "aud_dcps" then weborder = 5;
+	else if name = "school_present" then weborder = 6;
+	else if name = "charter_present" then weborder = 7;
+	else if name = "dcps_present" then weborder = 8;
 run;
 
 /* Output the metadata */

@@ -292,8 +292,25 @@ run;
 
 
 /* Create metadata for the dataset */
-proc contents data = &topic.&geosuf. out = &topic.&geosuf._metadata noprint;
+proc contents data = &topic.&geosuf. out = &topic.&geosuf._metadata_order noprint;
 run;
+
+data &topic.&geosuf._metadata;
+	set &topic.&geosuf._metadata_order;
+
+	if name = "PctPoorPersons" then weborder = 1;
+	else if name = "PctPoorPersons_m" then weborder = 2;
+	else if name = "PctPoorChildren" then weborder = 3;
+	else if name = "PctPoorChildren_m" then weborder = 4;
+	else if name = "PctPoorElderly" then weborder = 5;
+	else if name = "PctPoorElderly_m" then weborder = 6;
+	else if name = "AvgFamilyIncAdj" then weborder = 7;
+	else if name = "AvgFamilyIncAdj_m" then weborder = 8;
+	else if name = "PctChgAvgFamilyIncAdj" then weborder = 9;
+
+run;
+
+
 
 /* Output the metadata */
 ods csv file ="&_dcdata_default_path.\web\output\&topic.\&topic.&geosuf._metadata.csv";

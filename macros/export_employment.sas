@@ -197,7 +197,17 @@ run;
 
 
 /* Create metadata for the dataset */
-proc contents data = &topic.&geosuf. out = &topic.&geosuf._metadata noprint;
+proc contents data = &topic.&geosuf. out = &topic.&geosuf._metadata_order noprint;
+run;
+
+data &topic.&geosuf._metadata;
+	set &topic.&geosuf._metadata_order;
+
+	if name = "PctUnemployed" then weborder = 1;
+	else if name = "PctUnemployed_m" then weborder = 2;
+	else if name = "Pct16andOverEmployed" then weborder = 3;
+	else if name = "Pct16andOverEmployed_m" then weborder = 4;
+
 run;
 
 /* Output the metadata */

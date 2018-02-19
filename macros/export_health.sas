@@ -92,7 +92,14 @@ run;
 
 
 /* Create metadata for the dataset */
-proc contents data = &topic.&geosuf. out = &topic.&geosuf._metadata noprint;
+proc contents data = &topic.&geosuf. out = &topic.&geosuf._metadata_order noprint;
+run;
+
+data &topic.&geosuf._metadata;
+	set &topic.&geosuf._metadata_order;
+
+	if name = "Pct_births_teen" then weborder = 1;
+	else if name = "Pct_births_low_wt" then weborder = 2;
 run;
 
 /* Output the metadata */

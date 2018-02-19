@@ -330,7 +330,32 @@ run;
 
 
 /* Create metadata for the dataset */
-proc contents data = &topic.&geosuf. out = &topic.&geosuf._metadata noprint;
+proc contents data = &topic.&geosuf. out = &topic.&geosuf._metadata_order noprint;
+run;
+
+data &topic.&geosuf._metadata;
+	set &topic.&geosuf._metadata_order;
+
+	if name = "TotPop" then weborder = 1;
+	else if name = "PctChgTotPop" then weborder = 2;
+	else if name = "PctPopUnder18Years" then weborder = 3;
+	else if name = "PctPopUnder18Years_m" then weborder = 4;
+	else if name = "PctChgPopUnder18Years" then weborder = 5;
+	else if name = "PctPop65andOverYears" then weborder = 6;
+	else if name = "PctPop65andOverYears_m" then weborder = 7;
+	else if name = "PctChgPop65andOverYear" then weborder = 8;
+	else if name = "PctBlackNonHispBridge" then weborder = 9;
+	else if name = "PctBlackNonHispBridge_m" then weborder = 10;
+	else if name = "PctWhiteNonHispBridge" then weborder = 11;
+	else if name = "PctWhiteNonHispBridge_m" then weborder = 12;
+	else if name = "PctHisp" then weborder = 13;
+	else if name = "PctHisp_m" then weborder = 14;
+	else if name = "PctAsianPINonHispBridge" then weborder = 15;
+	else if name = "PctAPINonHispBridge_m" then weborder = 16;
+	else if name = "PctForeignBorn" then weborder = 17;
+	else if name = "PctForeignBorn_m" then weborder = 18;
+	else if name = "PctFamiliesOwnChildrenFH" then weborder = 19;
+	else if name = "PctFamiliesOwnChildFH_m" then weborder = 20;
 run;
 
 /* Output the metadata */

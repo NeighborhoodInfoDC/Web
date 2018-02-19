@@ -195,8 +195,18 @@ run;
 
 
 /* Create metadata for the dataset */
-proc contents data = &topic.&geosuf. out = &topic.&geosuf._metadata noprint;
+proc contents data = &topic.&geosuf. out = &topic.&geosuf._metadata_order noprint;
 run;
+
+data &topic.&geosuf._metadata;
+	set &topic.&geosuf._metadata_order;
+
+	if name = "PctHshldCar" then weborder = 1;
+	else if name = "PctHshldCar_m" then weborder = 2;
+	else if name = "PctHshldPhone" then weborder = 3;
+	else if name = "PctHshldPhone_m" then weborder = 4;
+run;
+
 
 /* Output the metadata */
 ods csv file ="&_dcdata_default_path.\web\output\&topic.\&topic.&geosuf._metadata.csv";
