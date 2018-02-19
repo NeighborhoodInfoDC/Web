@@ -305,7 +305,7 @@ data &topic.&geosuf.;
 	indc = 1;
 	%end;
 
-	label Totpop = "Population"
+	label Totpop = "Total Population"
 		  PctPopUnder18Years = "% children"
 		  PctPop65andOverYears = "% senior"
 		  PctForeignBorn = "% foreign born"
