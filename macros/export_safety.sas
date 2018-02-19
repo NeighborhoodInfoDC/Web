@@ -69,7 +69,7 @@
 
 
 data dcdata_&topic.&geosuf.;
-	set births_sum&geosuf._long_allyr ;
+	set crimes_sum&geosuf._long_allyr ;
 run;
 
 
