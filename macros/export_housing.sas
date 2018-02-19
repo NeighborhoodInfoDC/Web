@@ -216,7 +216,7 @@ data PctAnnChgRMPriceSf_&y.&geosuf.;
 	%define_dcmetro (countyvar = ucounty);
 	%end;
 	
-	timeframe = "&from. to &to." ;
+	timeframe = "&to." ;
 
 	/* Populate start and end dates */
 	start_date = "01jan&f."d;
