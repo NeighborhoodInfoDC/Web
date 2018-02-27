@@ -64,7 +64,6 @@
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_zip;
   %end;
 
-%macro ncdbloop (ds,ncdbyr);
 
 %macro ncdbloop (ds,ncdbyr);
 
@@ -141,10 +140,10 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 
 %end;
 
-	%if %upcase( &source_geo ) = GEO2010 %then %do;
-	/* Keep tracts in the MSA */
-	%define_dcmetro (countyvar = ucounty);
-	%end;
+%if %upcase( &source_geo ) = GEO2010 %then %do;
+/* Keep tracts in the MSA */
+%define_dcmetro (countyvar = ucounty);
+%end;
 
 %Pct_calc( var=PctPopUnder18Years, label=% children, num=PopUnder18Years, den=TotPop, years=&ncdbyr. );
 %Pct_calc( var=PctPop65andOverYears, label=% seniors, num=Pop65andOverYears, den=TotPop, years= &ncdbyr. );
@@ -154,23 +153,31 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 %Pct_calc( var=PctHisp, label=% Hispanic, num=PopHisp, den=PopWithRace, years=&ncdbyr. );
 %Pct_calc( var=PctAsianPINonHispBridge, label=% Asian/P.I. non-Hispanic, num=PopAsianPINonHispBridge, den=PopWithRace, years=&ncdbyr. );
 %Pct_calc( var=PctFamiliesOwnChildrenFH, label=% female-headed families with children, num=NumFamiliesOwnChildrenFH, den=NumFamiliesOwnChildren, years=&ncdbyr. );
+	
 
+%if &ncdbyr. = 2010 %then %do;
+keep &geo._nf &geo. start_date end_date timeframe
+	 TotPop_&ncdbyr. PctPopUnder18Years_&ncdbyr. PctPop65andOverYears_&ncdbyr. 
+	 PctBlackNonHispBridge_&ncdbyr. PctWhiteNonHispBridge_&ncdbyr. PctHisp_&ncdbyr. PctAsianPINonHispBridge_&ncdbyr.
+%end;
 
+%else %do;
 keep &geo._nf &geo. start_date end_date timeframe
 	 TotPop_&ncdbyr. PctPopUnder18Years_&ncdbyr. PctPop65andOverYears_&ncdbyr. PctForeignBorn_&ncdbyr. 
 	 PctBlackNonHispBridge_&ncdbyr. PctWhiteNonHispBridge_&ncdbyr. PctHisp_&ncdbyr. PctAsianPINonHispBridge_&ncdbyr.
 	 PctFamiliesOwnChildrenFH_&ncdbyr.;
+%end;
 
-rename 	TotPop_&ncdbyr. = 	TotPop
-	   	PctPopUnder18Years_&ncdbyr.  = PctPopUnder18Years
-		PctPop65andOverYears_&ncdbyr. = PctPop65andOverYears
-		PctForeignBorn_&ncdbyr. = PctForeignBorn
-	 	PctBlackNonHispBridge_&ncdbyr. = PctBlackNonHispBridge
-		PctWhiteNonHispBridge_&ncdbyr. = PctWhiteNonHispBridge
-		PctHisp_&ncdbyr. = PctHisp
-		PctAsianPINonHispBridge_&ncdbyr. = PctAsianPINonHispBridge
-		PctFamiliesOwnChildrenFH_&ncdbyr. =  PctFamiliesOwnChildrenFH
-;
+rename 	TotPop_&ncdbyr. = TotPop;
+rename	PctPopUnder18Years_&ncdbyr.  = PctPopUnder18Years;
+rename	PctPop65andOverYears_&ncdbyr. = PctPop65andOverYears;
+rename	PctForeignBorn_&ncdbyr. = PctForeignBorn;
+rename	PctBlackNonHispBridge_&ncdbyr. = PctBlackNonHispBridge;
+rename	PctWhiteNonHispBridge_&ncdbyr. = PctWhiteNonHispBridge;
+rename	PctHisp_&ncdbyr. = PctHisp;
+rename	PctAsianPINonHispBridge_&ncdbyr. = PctAsianPINonHispBridge;
+rename	PctFamiliesOwnChildrenFH_&ncdbyr. =  PctFamiliesOwnChildrenFH;
+
 
 
 %if &ds. = acs %then %do;
