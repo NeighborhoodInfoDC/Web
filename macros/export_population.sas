@@ -66,6 +66,7 @@
 
 %macro ncdbloop (ds,ncdbyr);
 
+%macro ncdbloop (ds,ncdbyr);
 
 data Ncdb_&ncdbyr._&topic.&geosuf.;
 
@@ -89,10 +90,20 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 
 	%else %if &ncdbyr. = 2010 %then %do;
 	length timeframe $ 15;
-	&ncdb10in.;
+	set &ncdb10in.;
 
 	start_date = '01jan10'd;
 	end_date = '31dec10'd;
+
+	TotPop_&ncdbyr. = TRCTPOP1;
+	PopUnder18Years_&ncdbyr. = CHILD1N;
+	Pop65andOverYears_&ncdbyr. = OLD1N;
+	PopWhiteNonHispBridge_&ncdbyr. = SHRNHW1N;
+	PopBlackNonHispBridge_&ncdbyr. = SHRNHB1N;
+	PopAsianPINonHispBridge_&ncdbyr. = SHRNHA1N;
+	PopWithRace_&ncdbyr. = SHR1D;
+	PopHisp_&ncdbyr. = SHRHSP1N;
+
 	%end;
 
 	format start_date end_date date9. ;
@@ -135,30 +146,30 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 	%define_dcmetro (countyvar = ucounty);
 	%end;
 
-	%Pct_calc( var=PctPopUnder18Years, label=% children, num=PopUnder18Years, den=TotPop, years=&ncdbyr. );
-	%Pct_calc( var=PctPop65andOverYears, label=% seniors, num=Pop65andOverYears, den=TotPop, years= &ncdbyr. );
-	%Pct_calc( var=PctForeignBorn, label=% foreign born, num=PopForeignBorn, den=TotPop, years= &ncdbyr.);
-	%Pct_calc( var=PctBlackNonHispBridge, label=% black non-Hispanic, num=PopBlackNonHispBridge, den=PopWithRace, years=&ncdbyr. );
-    %Pct_calc( var=PctWhiteNonHispBridge, label=% white non-Hispanic, num=PopWhiteNonHispBridge, den=PopWithRace, years=&ncdbyr. );
-    %Pct_calc( var=PctHisp, label=% Hispanic, num=PopHisp, den=PopWithRace, years=&ncdbyr. );
-    %Pct_calc( var=PctAsianPINonHispBridge, label=% Asian/P.I. non-Hispanic, num=PopAsianPINonHispBridge, den=PopWithRace, years=&ncdbyr. );
-	%Pct_calc( var=PctFamiliesOwnChildrenFH, label=% female-headed families with children, num=NumFamiliesOwnChildrenFH, den=NumFamiliesOwnChildren, years=&ncdbyr. );
+%Pct_calc( var=PctPopUnder18Years, label=% children, num=PopUnder18Years, den=TotPop, years=&ncdbyr. );
+%Pct_calc( var=PctPop65andOverYears, label=% seniors, num=Pop65andOverYears, den=TotPop, years= &ncdbyr. );
+%Pct_calc( var=PctForeignBorn, label=% foreign born, num=PopForeignBorn, den=TotPop, years= &ncdbyr.);
+%Pct_calc( var=PctBlackNonHispBridge, label=% black non-Hispanic, num=PopBlackNonHispBridge, den=PopWithRace, years=&ncdbyr. );
+%Pct_calc( var=PctWhiteNonHispBridge, label=% white non-Hispanic, num=PopWhiteNonHispBridge, den=PopWithRace, years=&ncdbyr. );
+%Pct_calc( var=PctHisp, label=% Hispanic, num=PopHisp, den=PopWithRace, years=&ncdbyr. );
+%Pct_calc( var=PctAsianPINonHispBridge, label=% Asian/P.I. non-Hispanic, num=PopAsianPINonHispBridge, den=PopWithRace, years=&ncdbyr. );
+%Pct_calc( var=PctFamiliesOwnChildrenFH, label=% female-headed families with children, num=NumFamiliesOwnChildrenFH, den=NumFamiliesOwnChildren, years=&ncdbyr. );
 
 
-	keep &geo._nf &geo. start_date end_date timeframe
-		 TotPop_&ncdbyr. PctPopUnder18Years_&ncdbyr. PctPop65andOverYears_&ncdbyr. PctForeignBorn_&ncdbyr. 
-		 PctBlackNonHispBridge_&ncdbyr. PctWhiteNonHispBridge_&ncdbyr. PctHisp_&ncdbyr. PctAsianPINonHispBridge_&ncdbyr.
-		 PctFamiliesOwnChildrenFH_&ncdbyr.;
+keep &geo._nf &geo. start_date end_date timeframe
+	 TotPop_&ncdbyr. PctPopUnder18Years_&ncdbyr. PctPop65andOverYears_&ncdbyr. PctForeignBorn_&ncdbyr. 
+	 PctBlackNonHispBridge_&ncdbyr. PctWhiteNonHispBridge_&ncdbyr. PctHisp_&ncdbyr. PctAsianPINonHispBridge_&ncdbyr.
+	 PctFamiliesOwnChildrenFH_&ncdbyr.;
 
-	rename 	TotPop_&ncdbyr. = 	TotPop
-		   	PctPopUnder18Years_&ncdbyr.  = PctPopUnder18Years
-			PctPop65andOverYears_&ncdbyr. = PctPop65andOverYears
-			PctForeignBorn_&ncdbyr. = PctForeignBorn
-		 	PctBlackNonHispBridge_&ncdbyr. = PctBlackNonHispBridge
-			PctWhiteNonHispBridge_&ncdbyr. = PctWhiteNonHispBridge
-			PctHisp_&ncdbyr. = PctHisp
-			PctAsianPINonHispBridge_&ncdbyr. = PctAsianPINonHispBridge
-			PctFamiliesOwnChildrenFH_&ncdbyr. =  PctFamiliesOwnChildrenFH
+rename 	TotPop_&ncdbyr. = 	TotPop
+	   	PctPopUnder18Years_&ncdbyr.  = PctPopUnder18Years
+		PctPop65andOverYears_&ncdbyr. = PctPop65andOverYears
+		PctForeignBorn_&ncdbyr. = PctForeignBorn
+	 	PctBlackNonHispBridge_&ncdbyr. = PctBlackNonHispBridge
+		PctWhiteNonHispBridge_&ncdbyr. = PctWhiteNonHispBridge
+		PctHisp_&ncdbyr. = PctHisp
+		PctAsianPINonHispBridge_&ncdbyr. = PctAsianPINonHispBridge
+		PctFamiliesOwnChildrenFH_&ncdbyr. =  PctFamiliesOwnChildrenFH
 ;
 
 
@@ -211,6 +222,7 @@ run;
 
 %ncdbloop (ncdb,1990);
 %ncdbloop (ncdb,2000);
+%ncdbloop (ncdb,2010);
 %ncdbloop (acs,acs);
 
 
@@ -219,17 +231,21 @@ data acs_all&geosuf.;
 run;
 
 data ch_&topic.&geosuf.;
-	merge acs_all&geosuf. &ncdb00in.;
+	merge acs_all&geosuf. &ncdb00in. &ncdb10in.;
 	by &geo.;
 
 	if TotPop_1990 > 0 then PctChgTotPop_1990_2000 = %pctchg( TotPop_1990, TotPop_2000 );
+	if TotPop_2000 > 0 then PctChgTotPop_2000_2010 = %pctchg( TotPop_2000, TotPop_2010 );
     if TotPop_2000 > 0 then PctChgTotPop_2000_&acsyr. = %pctchg( TotPop_2000, TotPop_&acsyr. );
 
 	if PopUnder18Years_1990 > 0 then PctChgPopUnder18Years_1990_2000 = %pctchg( PopUnder18Years_1990, PopUnder18Years_2000 );
+	if PopUnder18Years_2000 > 0 then PctChgPopUnder18Yea_2000_2010 = %pctchg( PopUnder18Years_2000, PopUnder18Years_2010 );
     if PopUnder18Years_2000 > 0 then PctChgPopUnder18Yea_2000_&acsyr. = %pctchg( PopUnder18Years_2000, PopUnder18Years_&acsyr. );
 
 	if Pop65andOverYears_1990 > 0 then PctChgPop65andOverYear_1990_2000 = %pctchg( Pop65andOverYears_1990, Pop65andOverYears_2000 );
+	if Pop65andOverYears_2000 > 0 then PctChgPop65andOverY_2000_2010 = %pctchg( Pop65andOverYears_2000, Pop65andOverYears_2010 );
     if Pop65andOverYears_2000 > 0 then PctChgPop65andOverY_2000_&acsyr. = %pctchg( Pop65andOverYears_2000, Pop65andOverYears_&acsyr. );
+
 run;
 
 
@@ -246,7 +262,7 @@ data ch_&topic.&geosuf._1990_2000;
 	%end;
 
 	/* ACS timeframe */
-	timeframe = "1990 to 2000" ;
+	timeframe = "2000" ;
 
 	/* Populate start and end dates */
 	start_date = '01jan90'd;
@@ -294,7 +310,7 @@ run;
 
 
 data &topic.&geosuf.;
-	set Ncdb_acs_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. Ncdb_1990_&topic.&geosuf. ch_&topic.&geosuf._2000_ACS ch_&topic.&geosuf._1990_2000;
+	set Ncdb_acs_&topic.&geosuf. Ncdb_2010_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. Ncdb_1990_&topic.&geosuf. ch_&topic.&geosuf._2000_ACS ch_&topic.&geosuf._1990_2000;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
 	ucounty=substr(geo2010,1,5);
