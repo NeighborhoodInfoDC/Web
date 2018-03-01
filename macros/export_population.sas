@@ -158,14 +158,14 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 %if &ncdbyr. = 2010 %then %do;
 keep &geo._nf &geo. start_date end_date timeframe
 	 TotPop_&ncdbyr. PctPopUnder18Years_&ncdbyr. PctPop65andOverYears_&ncdbyr. 
-	 PctBlackNonHispBridge_&ncdbyr. PctWhiteNonHispBridge_&ncdbyr. PctHisp_&ncdbyr. PctAsianPINonHispBridge_&ncdbyr.
+	 PctBlackNonHispBridge_&ncdbyr. PctWhiteNonHispBridge_&ncdbyr. PctHisp_&ncdbyr. PctAsianPINonHispBridge_&ncdbyr. ;
 %end;
 
 %else %do;
 keep &geo._nf &geo. start_date end_date timeframe
 	 TotPop_&ncdbyr. PctPopUnder18Years_&ncdbyr. PctPop65andOverYears_&ncdbyr. PctForeignBorn_&ncdbyr. 
 	 PctBlackNonHispBridge_&ncdbyr. PctWhiteNonHispBridge_&ncdbyr. PctHisp_&ncdbyr. PctAsianPINonHispBridge_&ncdbyr.
-	 PctFamiliesOwnChildrenFH_&ncdbyr.;
+	 PctFamiliesOwnChildrenFH_&ncdbyr. ;
 %end;
 
 rename 	TotPop_&ncdbyr. = TotPop;
@@ -284,7 +284,7 @@ data ch_&topic.&geosuf._1990_2000;
 run;
 
 
-data ch_&topic.&geosuf._2000_ACS;
+data ch_&topic.&geosuf._2000_2010;
 	length timeframe $ 15;
 	set ch_&topic.&geosuf.;
 
@@ -298,17 +298,17 @@ data ch_&topic.&geosuf._2000_ACS;
 
 	/* ACS timeframe */
 	
-	timeframe = "2000 to 2012-16" ;
+	timeframe = "2010" ;
 
 	/* Populate start and end dates */
 	start_date = '01jan00'd;
-	end_date = '31dec16'd;
+	end_date = '31dec10'd;
 	format start_date end_date date9. ;
 
 
-	PctChgTotPop = PctChgTotPop_2000_&acsyr.;
-	PctChgPopUnder18Years = PctChgPopUnder18Yea_2000_&acsyr.;
-	PctChgPop65andOverYear = PctChgPop65andOverY_2000_&acsyr.;
+	PctChgTotPop = PctChgTotPop_2000_2010;
+	PctChgPopUnder18Years = PctChgPopUnder18Yea_2000_2010;
+	PctChgPop65andOverYear = PctChgPop65andOverY_2000_2010;
 
 	keep &geo._nf &geo. start_date end_date timeframe PctChgTotPop PctChgPopUnder18Years PctChgPop65andOverYear;
 
@@ -317,7 +317,7 @@ run;
 
 
 data &topic.&geosuf.;
-	set Ncdb_acs_&topic.&geosuf. Ncdb_2010_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. Ncdb_1990_&topic.&geosuf. ch_&topic.&geosuf._2000_ACS ch_&topic.&geosuf._1990_2000;
+	set Ncdb_acs_&topic.&geosuf. Ncdb_2010_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. Ncdb_1990_&topic.&geosuf. ch_&topic.&geosuf._2000_2010 ch_&topic.&geosuf._1990_2000;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
 	ucounty=substr(geo2010,1,5);
