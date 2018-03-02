@@ -32,6 +32,7 @@
 
 /* Export population data */
 %export_population (geo2010);
+%export_population (county);
 %export_population (city);
 %export_population (wd12);
 %export_population (anc12);
@@ -42,6 +43,7 @@
 
 /* Export exmployment data */
 %export_employment (geo2010);
+%export_employment (county);
 %export_employment (city);
 %export_employment (wd12);
 %export_employment (anc12);
@@ -56,6 +58,7 @@
 %include "&_dcdata_default_path.\rod\prog\foreclosure_forweb.sas";
 
 %export_housing (geo2010);
+%export_housing (county);
 %export_housing (city);
 %export_housing (wd12);
 %export_housing (anc12);
@@ -66,6 +69,7 @@
 
 /* Export connection data */
 %export_connection (geo2010);
+%export_connection (county);
 %export_connection (city);
 %export_connection (wd12);
 %export_connection (anc12);

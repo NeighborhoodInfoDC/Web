@@ -21,6 +21,14 @@
 	 %let ncdb10in = ncdb.Ncdb_2010_was15;
 	 %let acsin = acs.acs_&acsyr._dc_sum_tr_tr10 acs.acs_&acsyr._md_sum_tr_tr10 acs.acs_&acsyr._va_sum_tr_tr10 acs.acs_&acsyr._wv_sum_tr_tr10;
   %end;
+%else %if %upcase( &source_geo ) = COUNTY %then %do;
+  	 %ncdb_cnty;
+     %let geo = county;
+     %let geosuf = _cnty;
+     %let ncdb00in = work.Ncdb_sum_was15_cnty;
+	 %let ncdb10in = work.Ncdb_2010_sum_was15_cnty;
+	 %let acsin = acs.acs_&acsyr._dc_sum_regcnt_regcnt acs.acs_&acsyr._md_sum_regcnt_regcnt acs.acs_&acsyr._va_sum_regcnt_regcnt acs.acs_&acsyr._wv_sum_regcnt_regcnt;
+  %end;
 %else %if %upcase( &source_geo ) = CITY %then %do;
      %let geo = city;
      %let geosuf = _city;
@@ -129,6 +137,12 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 	%define_dcmetro (countyvar = ucounty);
 	%end;
 
+	%else %if %upcase( &source_geo ) = COUNTY %then %do;
+	if county in ("11001","24009","24017","24021","24031","24033","51013","51043","51047","51059","51061",
+				  "51107","51153","51157","51177","51179","51187","51510","51600","51610","51630","51683",
+				  "51685","54037");
+	%end;
+
 %end;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
@@ -184,7 +198,7 @@ data &topic.&geosuf.;
 	drop ucounty;
 	%indc_flag (countyvar = ucounty);
 	%end;
-	%else %do;
+	%else %if %upcase( &source_geo ) ^= COUNTY %then %do;
 	indc = 1;
 	%end;
 

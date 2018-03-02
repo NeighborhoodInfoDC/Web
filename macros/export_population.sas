@@ -21,6 +21,14 @@
 	 %let ncdb10in = ncdb.Ncdb_2010_was15;
 	 %let acsin = acs.acs_&acsyr._dc_sum_tr_tr10 acs.acs_&acsyr._md_sum_tr_tr10 acs.acs_&acsyr._va_sum_tr_tr10 acs.acs_&acsyr._wv_sum_tr_tr10;
   %end;
+%else %if %upcase( &source_geo ) = COUNTY %then %do;
+  	 %ncdb_cnty;
+     %let geo = county;
+     %let geosuf = _cnty;
+     %let ncdb00in = work.Ncdb_sum_was15_cnty;
+	 %let ncdb10in = work.Ncdb_2010_sum_was15_cnty;
+	 %let acsin = acs.acs_&acsyr._dc_sum_regcnt_regcnt acs.acs_&acsyr._md_sum_regcnt_regcnt acs.acs_&acsyr._va_sum_regcnt_regcnt acs.acs_&acsyr._wv_sum_regcnt_regcnt;
+  %end;
 %else %if %upcase( &source_geo ) = CITY %then %do;
      %let geo = city;
      %let geosuf = _city;
@@ -64,8 +72,21 @@
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_zip;
   %end;
 
-
 %macro ncdbloop (ds,ncdbyr);
+
+/* Need to rename variables in NDCB 2010 */
+data rename_ncdb10;
+	set &ncdb10in.;
+	TotPop_2010 = TRCTPOP1;
+	PopUnder18Years_2010 = CHILD1N;
+	Pop65andOverYears_2010 = OLD1N;
+	PopWhiteNonHispBridge_2010 = SHRNHW1N;
+	PopBlackNonHispBridge_2010 = SHRNHB1N;
+	PopAsianPINonHispBridge_2010 = SHRNHA1N;
+	PopWithRace_2010 = SHR1D;
+	PopHisp_2010 = SHRHSP1N;
+run;
+
 
 data Ncdb_&ncdbyr._&topic.&geosuf.;
 
@@ -89,19 +110,10 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 
 	%else %if &ncdbyr. = 2010 %then %do;
 	length timeframe $ 15;
-	set &ncdb10in.;
+	set rename_ncdb10;
 
 	start_date = '01jan10'd;
 	end_date = '31dec10'd;
-
-	TotPop_&ncdbyr. = TRCTPOP1;
-	PopUnder18Years_&ncdbyr. = CHILD1N;
-	Pop65andOverYears_&ncdbyr. = OLD1N;
-	PopWhiteNonHispBridge_&ncdbyr. = SHRNHW1N;
-	PopBlackNonHispBridge_&ncdbyr. = SHRNHB1N;
-	PopAsianPINonHispBridge_&ncdbyr. = SHRNHA1N;
-	PopWithRace_&ncdbyr. = SHR1D;
-	PopHisp_&ncdbyr. = SHRHSP1N;
 
 	%end;
 
@@ -143,6 +155,12 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 %if %upcase( &source_geo ) = GEO2010 %then %do;
 /* Keep tracts in the MSA */
 %define_dcmetro (countyvar = ucounty);
+%end;
+
+%else %if %upcase( &source_geo ) = COUNTY %then %do;
+if county in ("11001","24009","24017","24021","24031","24033","51013","51043","51047","51059","51061",
+			  "51107","51153","51157","51177","51179","51187","51510","51600","51610","51630","51683",
+			  "51685","54037");
 %end;
 
 %Pct_calc( var=PctPopUnder18Years, label=% children, num=PopUnder18Years, den=TotPop, years=&ncdbyr. );
@@ -235,10 +253,15 @@ run;
 
 data acs_all&geosuf.;
 	set &acsin.; 
+	%if %upcase( &source_geo ) = COUNTY %then %do;
+	if county in ("11001","24009","24017","24021","24031","24033","51013","51043","51047","51059","51061",
+				  "51107","51153","51157","51177","51179","51187","51510","51600","51610","51630","51683",
+				  "51685","54037");
+	%end;
 run;
 
 data ch_&topic.&geosuf.;
-	merge acs_all&geosuf. &ncdb00in. &ncdb10in.;
+	merge acs_all&geosuf. &ncdb00in. rename_ncdb10;
 	by &geo.;
 
 	if TotPop_1990 > 0 then PctChgTotPop_1990_2000 = %pctchg( TotPop_1990, TotPop_2000 );
@@ -324,7 +347,7 @@ data &topic.&geosuf.;
 	drop ucounty;
 	%indc_flag (countyvar = ucounty);
 	%end;
-	%else %do;
+	%else %if %upcase( &source_geo ) ^= COUNTY %then %do;
 	indc = 1;
 	%end;
 
