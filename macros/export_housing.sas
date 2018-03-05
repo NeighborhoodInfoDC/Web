@@ -10,9 +10,6 @@
 
 **************************************************************************/
 
-
-
-
 %macro export_housing (source_geo);
 
 %let topic = housing ;
@@ -75,8 +72,22 @@
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_zip;
   %end;
 
-%macro ncdbloop (ds,ncdbyr);
 
+ /* Macro to create a _cnty suffix file for each _city dc file */
+%macro dc_county (in);
+data &in._cnty_long_allyr;
+	set &in._city_long_allyr;
+	county = "11001";
+	drop city;
+run;
+%mend dc_county;
+%dc_county (sales_sum);
+%dc_county (hmda_sum);
+%dc_county (fcl);
+
+
+
+%macro ncdbloop (ds,ncdbyr);
 
 data Ncdb_&ncdbyr._&topic.&geosuf.;
 
@@ -197,11 +208,19 @@ run;
 data dcdata_&topic.&geosuf.;
 	merge Sales_sum&geosuf._long_allyr Hmda_sum&geosuf._long_allyr fcl&geosuf._long_allyr;
 	by &geo.;
+	&geo._nf = &geo.;
 run;
 
 
 data price_change&geosuf.;
+	%if %upcase( &source_geo ) = COUNTY %then %do;
+	set realprop.sales_sum_city;
+	county = "11001";
+	drop city;
+	%end;
+	%else %do;
 	set realprop.sales_sum&geosuf.;
+	%end;
 
 	%let rsales_end_yr = 2016;
 
