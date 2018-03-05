@@ -82,6 +82,7 @@
 %include "&_dcdata_default_path.\tanf\prog\TANF_forweb.sas";
 %include "&_dcdata_default_path.\tanf\prog\FS_forweb.sas";
 %export_income (geo2010);
+%export_income (county);
 %export_income (city);
 %export_income (wd12);
 %export_income (anc12);
@@ -93,6 +94,7 @@
 /* Export education data */
 %include "&_dcdata_default_path.\Schools\Prog\Schools_forweb.sas";
 %export_education (geo2010);
+%export_education (county);
 %export_education (city);
 %export_education (wd12);
 %export_education (anc12);
