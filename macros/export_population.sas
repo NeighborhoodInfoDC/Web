@@ -71,12 +71,22 @@
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_zip;
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_zip;
   %end;
+ %else %if %upcase( &source_geo ) = CL17 %then %do;
+     %let geo = cluster2017;
+     %let geosuf = _cl17;
+     %let ncdb00in = ncdb.Ncdb_sum_cl17;
+	 %let ncdb10in = ncdb.Ncdb_sum_2010_cl17;
+	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_cl17;
+  %end;
 
 %macro ncdbloop (ds,ncdbyr);
+
 
 /* Need to rename variables in NDCB 2010 */
 data rename_ncdb10;
 	set &ncdb10in.;
+
+	%if %upcase( &source_geo ) = COUNTY %then %do;
 	TotPop_2010 = TRCTPOP1;
 	PopUnder18Years_2010 = CHILD1N;
 	Pop65andOverYears_2010 = OLD1N;
@@ -85,6 +95,8 @@ data rename_ncdb10;
 	PopAsianPINonHispBridge_2010 = SHRNHA1N;
 	PopWithRace_2010 = SHR1D;
 	PopHisp_2010 = SHRHSP1N;
+	%end;
+
 run;
 
 
@@ -372,6 +384,11 @@ data &topic.&geosuf.;
 		  PctAPINonHispBridge_m = "% Asian/P.I. non-Hispanic MOE"
 		  PctFamiliesOwnChildFH_m = "% female-headed families with children MOE"
 		  ;
+
+	format TotPop PctPopUnder18Years PctPop65andOverYears PctForeignBorn PctBlackNonHispBridge PctWhiteNonHispBridge PctHisp
+		   PctAsianPINonHispBridge PctFamiliesOwnChildrenFH PctChgTotPop PctChgPopUnder18Years PctChgPop65andOverYear 
+		   PctPopUnder18Years_m PctPop65andOverYears_m PctForeignBorn_m PctBlackNonHispBridge_m PctWhiteNonHispBridge_m PctHisp_m
+		   PctAPINonHispBridge_m PctFamiliesOwnChildFH_m $profnum.;
 run;
 
 
@@ -402,6 +419,7 @@ data &topic.&geosuf._metadata;
 	else if name = "PctForeignBorn_m" then weborder = 18;
 	else if name = "PctFamiliesOwnChildrenFH" then weborder = 19;
 	else if name = "PctFamiliesOwnChildFH_m" then weborder = 20;
+
 run;
 
 /* Output the metadata */

@@ -71,6 +71,13 @@
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_zip;
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_zip;
   %end;
+  %else %if %upcase( &source_geo ) = CL17 %then %do;
+     %let geo = cluster2017;
+     %let geosuf = _cl17;
+     %let ncdb00in = ncdb.Ncdb_sum_cl17;
+	 %let ncdb10in = ncdb.Ncdb_sum_2010_cl17;
+	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_cl17;
+  %end;
 
 %macro ncdbloop (ds,ncdbyr);
 
@@ -78,7 +85,7 @@
 data &in._cnty_long_allyr;
 	set &in._city_long_allyr;
 	county = "11001";
-	drop city;
+	drop city city_nf;
 	county_nf = county;
 run;
 %mend dc_county;
@@ -284,9 +291,16 @@ data tanf_fs&geosuf.;
 	by &geo._nf;
 run;
 
+data alldata_&topic.&geosuf.;
+	set Ncdb_acs_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. Ncdb_1990_&topic.&geosuf. ch_&topic.&geosuf._2000_ACS ch_&topic.&geosuf._1990_2000 tanf_fs&geosuf.;
+run;
+
+%suppress_lowpop (in_check = alldata_&topic.&geosuf.,
+				  out_check = checked_&topic.&geosuf.);
+
 
 data &topic.&geosuf.;
-	set Ncdb_acs_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. Ncdb_1990_&topic.&geosuf. ch_&topic.&geosuf._2000_ACS ch_&topic.&geosuf._1990_2000 tanf_fs&geosuf.;
+	set checked_&topic.&geosuf.;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
 	ucounty=substr(geo2010,1,5);
@@ -309,6 +323,10 @@ data &topic.&geosuf.;
 		  AvgFamilyIncAdj_m = "AvgFamilyIncAdj MOE"
 		  PctChgAvgFamilyIncAdj = "% change in avg. family income"
 		  ;
+
+	format PctPoorPersons PctPoorChildren PctPoorElderly AvgFamilyIncAdj 
+		   PctPoorPersons_m PctPoorChildren_m PctPoorElderly_m AvgFamilyIncAdj_m PctChgAvgFamilyIncAdj 
+	       Fs_client Tanf_client $profnum.;
 run;
 
 

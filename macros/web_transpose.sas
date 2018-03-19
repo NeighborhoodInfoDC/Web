@@ -77,6 +77,10 @@ and CSV export will take place in the accompanying programs.
      %let sortvar = ZIP;
      %let TypeOfDat = ZIP;
   %end;
+  %else %if %upcase( &source_geo ) = CL17 %then %do;
+     %let sortvar = CLUSTER2017;
+     %let TypeOfDat = CL17;
+  %end;
   %else %do;
     %err_mput( macro= web_transpose, msg=Geograpy &source_geo is not supported. )
   %end;

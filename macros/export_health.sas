@@ -24,6 +24,14 @@
 	 %let ncdb10in = ncdb.Ncdb_2010_was15;
 	 %let acsin = acs.acs_&acsyr._dc_sum_tr_tr10 acs.acs_&acsyr._md_sum_tr_tr10 acs.acs_&acsyr._va_sum_tr_tr10 acs.acs_&acsyr._wv_sum_tr_tr10;
   %end;
+%else %if %upcase( &source_geo ) = COUNTY %then %do;
+  	 %ncdb_cnty;
+     %let geo = county;
+     %let geosuf = _cnty;
+     %let ncdb00in = work.Ncdb_sum_was15_cnty;
+	 %let ncdb10in = work.Ncdb_2010_sum_was15_cnty;
+	 %let acsin = acs.acs_&acsyr._dc_sum_regcnt_regcnt acs.acs_&acsyr._md_sum_regcnt_regcnt acs.acs_&acsyr._va_sum_regcnt_regcnt acs.acs_&acsyr._wv_sum_regcnt_regcnt;
+  %end;
 %else %if %upcase( &source_geo ) = CITY %then %do;
      %let geo = city;
      %let geosuf = _city;
@@ -66,11 +74,32 @@
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_zip;
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_zip;
   %end;
+ %else %if %upcase( &source_geo ) = CL17 %then %do;
+     %let geo = cluster2017;
+     %let geosuf = _cl17;
+     %let ncdb00in = ncdb.Ncdb_sum_cl17;
+	 %let ncdb10in = ncdb.Ncdb_sum_2010_cl17;
+	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_cl17;
+  %end;
 
 
-data dcdata_&topic.&geosuf.;
-	set births_sum&geosuf._long_allyr ;
+%macro dc_county (in);
+data &in._cnty_long_allyr;
+	set &in._city_long_allyr;
+	county = "11001";
+	drop city city_nf;
+	county_nf = county;
 run;
+%mend dc_county;
+%dc_county (Births_sum);
+
+
+/*data dcdata_&topic.&geosuf.;
+	set births_sum&geosuf._long_allyr ;
+run;*/
+
+%suppress_lowpop (in_check = births_sum&geosuf._long_allyr,
+				  out_check = dcdata_&topic.&geosuf.);
 
 
 data &topic.&geosuf.;
@@ -88,6 +117,8 @@ data &topic.&geosuf.;
 	label 	Pct_births_low_wt = "% low weight births (under 5.5 lbs)"
 			Pct_births_teen = "% births to teen mothers"
 		  ;
+
+	format Pct_births_low_wt Pct_births_teen $profnum.;
 run;
 
 

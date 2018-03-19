@@ -71,9 +71,34 @@
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_zip;
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_zip;
   %end;
+ %else %if %upcase( &source_geo ) = CL17 %then %do;
+     %let geo = cluster2017;
+     %let geosuf = _cl17;
+     %let ncdb00in = ncdb.Ncdb_sum_cl17;
+	 %let ncdb10in = ncdb.Ncdb_sum_2010_cl17;
+	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_cl17;
+  %end;
 
 
 %macro ncdbloop (ds,ncdbyr);
+
+
+/* Need to rename variables in NDCB 2010 */
+data rename_ncdb10;
+	set &ncdb10in.;
+
+	%if %upcase( &source_geo ) = COUNTY %then %do;
+	TotPop_2010 = TRCTPOP1;
+	PopUnder18Years_2010 = CHILD1N;
+	Pop65andOverYears_2010 = OLD1N;
+	PopWhiteNonHispBridge_2010 = SHRNHW1N;
+	PopBlackNonHispBridge_2010 = SHRNHB1N;
+	PopAsianPINonHispBridge_2010 = SHRNHA1N;
+	PopWithRace_2010 = SHR1D;
+	PopHisp_2010 = SHRHSP1N;
+	%end;
+
+run;
 
 
 data Ncdb_&ncdbyr._&topic.&geosuf.;
@@ -190,8 +215,16 @@ run;
 %ncdbloop (acs,acs);
 
 
-data &topic.&geosuf.;
+data alldata_&topic.&geosuf.;
 	set Ncdb_acs_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. Ncdb_1990_&topic.&geosuf.;
+run;
+
+%suppress_lowpop (in_check = alldata_&topic.&geosuf.,
+				  out_check = checked_&topic.&geosuf.);
+
+
+data &topic.&geosuf.;
+	set checked_&topic.&geosuf.;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
 	ucounty=substr(geo2010,1,5);
@@ -207,6 +240,8 @@ data &topic.&geosuf.;
 		  PctUnemployed_m = "Unemployment rate (%) MOE"
 		  Pct16andOverEmployed_m = "% pop. 16+ yrs. employed MOE"
 		  ;
+
+	format PctUnemployed Pct16andOverEmployed PctUnemployed_m Pct16andOverEmployed_m $profnum.;
 run;
 
 

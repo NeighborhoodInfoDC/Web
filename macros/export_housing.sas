@@ -71,6 +71,13 @@
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_zip;
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_zip;
   %end;
+ %else %if %upcase( &source_geo ) = CL17 %then %do;
+     %let geo = cluster2017;
+     %let geosuf = _cl17;
+     %let ncdb00in = ncdb.Ncdb_sum_cl17;
+	 %let ncdb10in = ncdb.Ncdb_sum_2010_cl17;
+	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_cl17;
+  %end;
 
 
  /* Macro to create a _cnty suffix file for each _city dc file */
@@ -263,9 +270,16 @@ data PctAnnChgRMPriceSf_&y.&geosuf.;
 %priceloop(10,2006,2016,06,16);
 
 
-data &topic.&geosuf.;
+data alldata_&topic.&geosuf.;
 	set Ncdb_acs_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. Ncdb_1990_&topic.&geosuf. dcdata_&topic.&geosuf.
 		PctAnnChgRMPriceSf_1&geosuf. PctAnnChgRMPriceSf_5&geosuf. PctAnnChgRMPriceSf_10&geosuf.;
+run;
+
+%suppress_lowpop (in_check = alldata_&topic.&geosuf.,
+				  out_check = checked_&topic.&geosuf.);
+
+data &topic.&geosuf.;
+	set checked_&topic.&geosuf.;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
 	ucounty=substr(geo2010,1,5);
@@ -295,6 +309,11 @@ data &topic.&geosuf.;
 			PctAnnChgRMPriceSf_5yr = "% annual change median price past 5 years"
 			PctAnnChgRMPriceSf_10yr = "% annual change median price past 10 years"
 		  ;
+
+	format NumOccupiedHsgUnits PctSameHouse5YearsAgo PctVacantHsgUnitsForRent PctOwnerOccupiedHsgUnits PctVacantHUForRent_m
+		   PctOwnerOccupiedHU_m mprice_sf sales_sf MedianMrtgInc1_4m_adj NumMrtgOrigHomePurchPerUnit PctSubprimeConvOrigHomePur 
+		   forecl_ssl_1Kpcl_sf_condo forecl_ssl_sf_condo trustee_ssl_1Kpcl_sf_condo trustee_ssl_sf_condo 
+	       PctAnnChgRMPriceSf_1yr PctAnnChgRMPriceSf_5yr PctAnnChgRMPriceSf_10yr $profnum.;
 run;
 
 

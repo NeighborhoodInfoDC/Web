@@ -71,6 +71,13 @@
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_zip;
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_zip;
   %end;
+  %else %if %upcase( &source_geo ) = CL17 %then %do;
+     %let geo = cluster2017;
+     %let geosuf = _cl17;
+     %let ncdb00in = ncdb.Ncdb_sum_cl17;
+	 %let ncdb10in = ncdb.Ncdb_sum_2010_cl17;
+	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_cl17;
+  %end;
 
 
 
@@ -190,9 +197,16 @@ run;
 %ncdbloop (ncdb,2000);
 %ncdbloop (acs,acs);
 
+data alldata_&topic.&geosuf.;
+	set Ncdb_acs_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. ;
+run;
+
+%suppress_lowpop (in_check = alldata_&topic.&geosuf.,
+				  out_check = checked_&topic.&geosuf.);
+
 
 data &topic.&geosuf.;
-	set Ncdb_acs_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. ;
+	set checked_&topic.&geosuf.;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
 	ucounty=substr(geo2010,1,5);
@@ -208,6 +222,8 @@ data &topic.&geosuf.;
 			PctHshldPhone_m = "% HHs with a phone MOE"
 			PctHshldCar_m = "% HHs with a car MOE"
 		  ;
+
+	format PctHshldPhone PctHshldCar PctHshldPhone_m PctHshldCar_m $profnum.;
 run;
 
 
