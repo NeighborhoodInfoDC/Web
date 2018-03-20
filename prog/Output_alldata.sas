@@ -31,15 +31,7 @@
 
 
 ** Format for final output data **;
- proc format;
-    picture profnum (default=12 round)
-      -9999999999, .i = 'i' (noedit)
-      -9999999998, .s = 's' (noedit)
-      -999999999 - -10 = '000,000,009' (prefix='-')
-      -10 <-< 0 = '009.9' (prefix='-')
-       0   -<10 = '009.9'
-      10 - high = '000,000,009' ;
-  run;
+%web_formats;
 
 
 /* Export population data */
