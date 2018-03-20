@@ -194,7 +194,7 @@ run;
 
 
 data alldata_&topic.&geosuf.;
-	set msf_sum&geosuf._long_allyr Ncdb_acs_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. Ncdb_1990_&topic.&geosuf. dcdata_&topic.&geosuf.;
+	set msf_sum&geosuf._long_allyr Ncdb_acs_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. Ncdb_1990_&topic.&geosuf.;
 run;
 
 %suppress_lowpop (in_check = alldata_&topic.&geosuf.,

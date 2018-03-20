@@ -305,6 +305,7 @@ data &topic.&geosuf.;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
 	ucounty=substr(geo2010,1,5);
+	format ucounty $profile_cnty.;
 	%define_dcmetro (countyvar = ucounty);
 	%end;
 
