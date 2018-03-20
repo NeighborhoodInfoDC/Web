@@ -241,6 +241,7 @@ data ch_&topic.&geosuf._1990_2000;
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
 	ucounty=substr(geo2010,1,5);
 	%define_dcmetro (countyvar = ucounty);
+	format ucounty $profile_cnty.;
 	%end;
 
 	/* ACS timeframe */

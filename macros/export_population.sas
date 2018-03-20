@@ -349,14 +349,21 @@ data ch_&topic.&geosuf._2000_2010;
 
 run;
 
+data alldata_&topic.&geosuf.;
+	set Ncdb_acs_&topic.&geosuf. Ncdb_2010_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. Ncdb_1990_&topic.&geosuf. ch_&topic.&geosuf._2000_2010 ch_&topic.&geosuf._1990_2000;
+run;
+
+%suppress_lowpop (in_check = alldata_&topic.&geosuf.,
+				  out_check = checked_&topic.&geosuf.);
+
 
 
 data &topic.&geosuf.;
-	set Ncdb_acs_&topic.&geosuf. Ncdb_2010_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. Ncdb_1990_&topic.&geosuf. ch_&topic.&geosuf._2000_2010 ch_&topic.&geosuf._1990_2000;
+	set checked_&topic.&geosuf.;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
 	ucounty=substr(geo2010,1,5);
-	drop ucounty;
+	format ucounty $profile_cnty.;
 	%indc_flag (countyvar = ucounty);
 	%end;
 	%else %if %upcase( &source_geo ) ^= COUNTY %then %do;

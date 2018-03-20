@@ -210,7 +210,7 @@ data &topic.&geosuf.;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
 	ucounty=substr(geo2010,1,5);
-	drop ucounty;
+	format ucounty $profile_cnty.;
 	%indc_flag (countyvar = ucounty);
 	%end;
 	%else %if %upcase( &source_geo ) ^= COUNTY %then %do;
