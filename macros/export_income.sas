@@ -293,7 +293,44 @@ data tanf_fs&geosuf.;
 run;
 
 data alldata_&topic.&geosuf.;
-	set Ncdb_acs_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. Ncdb_1990_&topic.&geosuf. ch_&topic.&geosuf._2000_ACS ch_&topic.&geosuf._1990_2000 tanf_fs&geosuf.;
+	set Ncdb_acs_&topic.&geosuf. (in=a) 
+		Ncdb_2000_&topic.&geosuf. (in=b) 
+		Ncdb_1990_&topic.&geosuf. (in=c) 
+		ch_&topic.&geosuf._2000_ACS (in=d) 
+		ch_&topic.&geosuf._1990_2000 (in=e) 
+		tanf_fs&geosuf. (in=f);
+
+	if f then do;
+	PctPoorPersons =.x;
+	PctPoorPersons_m = .x;
+	PctPoorChildren = .x;
+	PctPoorChildren_m = .x;
+	PctPoorElderly = .x;
+	PctPoorElderly_m = .x;
+	AvgFamilyIncAdj = .x;
+	AvgFamilyIncAdj_m = .x;
+	PctChgAvgFamilyIncAdj = .x;
+	end;
+
+	else if d or e then do;
+	PctPoorPersons =.x;
+	PctPoorPersons_m = .x;
+	PctPoorChildren = .x;
+	PctPoorChildren_m = .x;
+	PctPoorElderly = .x;
+	PctPoorElderly_m = .x;
+	AvgFamilyIncAdj = .x;
+	AvgFamilyIncAdj_m = .x;
+	Tanf_client = .x;
+	fs_client = .x;
+	end;
+
+	else if a or b or c then do;
+	PctChgAvgFamilyIncAdj = .x;
+	Tanf_client = .x;
+	fs_client = .x;
+	end;
+
 run;
 
 %suppress_lowpop (in_check = alldata_&topic.&geosuf.,

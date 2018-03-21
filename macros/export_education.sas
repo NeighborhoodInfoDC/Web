@@ -199,12 +199,8 @@ data alldata_&topic.&geosuf.;
 		Ncdb_2000_&topic.&geosuf. (in=c) 
 		Ncdb_1990_&topic.&geosuf. (in=d);
 
-	if a and not (b and c and d) then do;
+	if a then do;
 	Pct25andOverWoutHS = .x;
-	Pct25andOverWoutHS_m =.x;
-	end;
-
-	if (c or d) and not b then do;
 	Pct25andOverWoutHS_m =.x;
 	end;
 

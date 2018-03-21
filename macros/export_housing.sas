@@ -271,8 +271,38 @@ data PctAnnChgRMPriceSf_&y.&geosuf.;
 
 
 data alldata_&topic.&geosuf.;
-	set Ncdb_acs_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. Ncdb_1990_&topic.&geosuf. dcdata_&topic.&geosuf.
-		PctAnnChgRMPriceSf_1&geosuf. PctAnnChgRMPriceSf_5&geosuf. PctAnnChgRMPriceSf_10&geosuf.;
+	set Ncdb_acs_&topic.&geosuf. (in=a)
+		Ncdb_2000_&topic.&geosuf. (in=b) 
+		Ncdb_1990_&topic.&geosuf. (in=c) 
+		dcdata_&topic.&geosuf. (in=d) 
+		PctAnnChgRMPriceSf_1&geosuf. (in=e) 
+		PctAnnChgRMPriceSf_5&geosuf. (in=f) 
+		PctAnnChgRMPriceSf_10&geosuf. (in=g);
+
+	if a or b or c then do;
+	mprice_sf = .x;
+	sales_sf = .x;
+	MedianMrtgInc1_4m_adj = .x;
+	NumMrtgOrigHomePurchPerUnit = .x;
+	PctSubprimeConvOrigHomePur = .x;
+	forecl_ssl_1Kpcl_sf_condo = .x;
+	forecl_ssl_sf_condo = .x;
+	trustee_ssl_1Kpcl_sf_condo = .x;
+	trustee_ssl_sf_condo = .x;
+	PctAnnChgRMPriceSf_1yr = .x;
+	PctAnnChgRMPriceSf_5yr = .x;
+	PctAnnChgRMPriceSf_10yr = .x;
+	end;
+
+	else if d or e or f or g then do;
+	NumOccupiedHsgUnits = .x;
+	PctSameHouse5YearsAgo = .x;
+	PctVacantHsgUnitsForRent = .x;
+	PctOwnerOccupiedHsgUnits = .x;
+	PctVacantHUForRent_m = .x;
+	PctOwnerOccupiedHU_m = .x;
+	end;
+
 run;
 
 %suppress_lowpop (in_check = alldata_&topic.&geosuf.,

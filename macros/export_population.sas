@@ -350,7 +350,39 @@ data ch_&topic.&geosuf._2000_2010;
 run;
 
 data alldata_&topic.&geosuf.;
-	set Ncdb_acs_&topic.&geosuf. Ncdb_2010_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. Ncdb_1990_&topic.&geosuf. ch_&topic.&geosuf._2000_2010 ch_&topic.&geosuf._1990_2000;
+	set Ncdb_acs_&topic.&geosuf. (in=a) 
+	Ncdb_2010_&topic.&geosuf. (in=b) 
+	Ncdb_2000_&topic.&geosuf. (in=c) 
+	Ncdb_1990_&topic.&geosuf. (in=d) 
+	ch_&topic.&geosuf._2000_2010 (in=e) 
+	ch_&topic.&geosuf._1990_2000 (in=f);
+
+	if a or b or c or d then do;
+	PctChgTotPop = .x;
+	PctChgPopUnder18Years = .x;
+	PctChgPop65andOverYear = .x;
+	end; 
+
+	else if e or f then do;
+	Totpop = .x;
+	PctPopUnder18Years = .x;
+	PctPop65andOverYears = .x;
+	PctForeignBorn = .x;
+	PctBlackNonHispBridge = .x;
+	PctWhiteNonHispBridge = .x;
+	PctHisp = .x;
+	PctAsianPINonHispBridge = .x;
+	PctFamiliesOwnChildrenFH = .x;
+	PctPopUnder18Years_m = .x;
+	PctPop65andOverYears_m = .x;
+	PctForeignBorn_m = .x;
+	PctBlackNonHispBridge_m = .x;
+	PctWhiteNonHispBridge_m = .x;
+	PctHisp_m = .x;
+	PctAPINonHispBridge_m = .x;
+	PctFamiliesOwnChildFH_m = .x;
+	end;
+
 run;
 
 %suppress_lowpop (in_check = alldata_&topic.&geosuf.,
