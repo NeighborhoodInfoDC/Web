@@ -239,9 +239,11 @@ rename	PctFamiliesOwnChildrenFH_&ncdbyr. =  PctFamiliesOwnChildrenFH;
 
 
 	keep PctPopUnder18Years_m_&acsyr. PctPop65andOverYears_m_&acsyr. PctForeignBorn_m_&acsyr. PctBlackNonHispBridge_m_&acsyr.
-		 PctWhiteNonHispBridge_m_&acsyr. PctHisp_m_&acsyr. PctAPINonHispBridge_m_&acsyr. PctFamiliesOwnChildFH_m_&acsyr.;
+		 PctWhiteNonHispBridge_m_&acsyr. PctHisp_m_&acsyr. PctAPINonHispBridge_m_&acsyr. PctFamiliesOwnChildFH_m_&acsyr.
+		 mTotPop_&acsyr.;
 
-	rename 	PctPopUnder18Years_m_&acsyr. = PctPopUnder18Years_m
+	rename 	mTotPop_&acsyr. = TotPop_m
+			PctPopUnder18Years_m_&acsyr. = PctPopUnder18Years_m
 			PctPop65andOverYears_m_&acsyr. = PctPop65andOverYears_m
 			PctForeignBorn_m_&acsyr. = PctForeignBorn_m
 			PctBlackNonHispBridge_m_&acsyr. = PctBlackNonHispBridge_m
@@ -415,6 +417,7 @@ data &topic.&geosuf.;
 		  PctChgTotPop = "% change population"
 		  PctChgPopUnder18Years = "% change child population"
 		  PctChgPop65andOverYear = "% change senior population"
+		  Totpop_m = "Total Population MOE"
 		  PctPopUnder18Years_m = "% children MOE"
 		  PctPop65andOverYears_m = "% senior MOE"
 		  PctForeignBorn_m = "% foreign born MOE"
@@ -426,7 +429,7 @@ data &topic.&geosuf.;
 		  ;
 
 	format TotPop PctPopUnder18Years PctPop65andOverYears PctForeignBorn PctBlackNonHispBridge PctWhiteNonHispBridge PctHisp
-		   PctAsianPINonHispBridge PctFamiliesOwnChildrenFH PctChgTotPop PctChgPopUnder18Years PctChgPop65andOverYear 
+		   PctAsianPINonHispBridge PctFamiliesOwnChildrenFH PctChgTotPop PctChgPopUnder18Years PctChgPop65andOverYear Totpop_m
 		   PctPopUnder18Years_m PctPop65andOverYears_m PctForeignBorn_m PctBlackNonHispBridge_m PctWhiteNonHispBridge_m PctHisp_m
 		   PctAPINonHispBridge_m PctFamiliesOwnChildFH_m $profnum.;
 run;
@@ -450,15 +453,16 @@ data &topic.&geosuf._metadata;
 	else if name = "PctBlackNonHispBridge" then weborder = 9;
 	else if name = "PctBlackNonHispBridge_m" then weborder = 10;
 	else if name = "PctWhiteNonHispBridge" then weborder = 11;
-	else if name = "PctWhiteNonHispBridge_m" then weborder = 12;
-	else if name = "PctHisp" then weborder = 13;
-	else if name = "PctHisp_m" then weborder = 14;
-	else if name = "PctAsianPINonHispBridge" then weborder = 15;
-	else if name = "PctAPINonHispBridge_m" then weborder = 16;
-	else if name = "PctForeignBorn" then weborder = 17;
-	else if name = "PctForeignBorn_m" then weborder = 18;
-	else if name = "PctFamiliesOwnChildrenFH" then weborder = 19;
-	else if name = "PctFamiliesOwnChildFH_m" then weborder = 20;
+	else if name = "TotPop_m" then weborder = 12;
+	else if name = "PctWhiteNonHispBridge_m" then weborder = 13;
+	else if name = "PctHisp" then weborder = 14;
+	else if name = "PctHisp_m" then weborder = 15;
+	else if name = "PctAsianPINonHispBridge" then weborder = 16;
+	else if name = "PctAPINonHispBridge_m" then weborder = 17;
+	else if name = "PctForeignBorn" then weborder = 18;
+	else if name = "PctForeignBorn_m" then weborder = 19;
+	else if name = "PctFamiliesOwnChildrenFH" then weborder = 20;
+	else if name = "PctFamiliesOwnChildFH_m" then weborder = 21;
 
 run;
 

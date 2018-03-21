@@ -209,10 +209,11 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
                        num_moe=mNumOwnerOccupiedHU_&acsyr., den_moe=mNumOccupiedHsgUnits_&acsyr. );
 
 
-	keep PctVacantHUForRent_m_&acsyr. PctOwnerOccupiedHU_m_&acsyr.;
+	keep PctVacantHUForRent_m_&acsyr. PctOwnerOccupiedHU_m_&acsyr. mNumOccupiedHsgUnits_&acsyr.;
 
 	rename 	PctVacantHUForRent_m_&acsyr. = PctVacantHUForRent_m
 			PctOwnerOccupiedHU_m_&acsyr. = PctOwnerOccupiedHU_m
+			mNumOccupiedHsgUnits_&acsyr. = NumOccupiedHsgUnits_m
 			;
 
 %end;
@@ -341,6 +342,7 @@ data &topic.&geosuf.;
 			PctSameHouse5YearsAgo = "% same house 5 years ago"
 			PctVacantHsgUnitsForRent = "Rental vacancy rate (%)"
 			PctOwnerOccupiedHsgUnits = "Homeownership rate (%)"
+			NumOccupiedHsgUnits_m = "Occupied housing units MOE"
 			PctVacantHUForRent_m = "Rental vacancy rate (%) MOE"
 			PctOwnerOccupiedHU_m = "Homeownership rate (%) MOE"
 			mprice_sf = "Single-Family Homes, Median sales price"
@@ -358,7 +360,8 @@ data &topic.&geosuf.;
 		  ;
 
 	format NumOccupiedHsgUnits PctSameHouse5YearsAgo PctVacantHsgUnitsForRent PctOwnerOccupiedHsgUnits PctVacantHUForRent_m
-		   PctOwnerOccupiedHU_m mprice_sf sales_sf MedianMrtgInc1_4m_adj NumMrtgOrigHomePurchPerUnit PctSubprimeConvOrigHomePur 
+		   PctOwnerOccupiedHU_m NumOccupiedHsgUnits_m mprice_sf sales_sf MedianMrtgInc1_4m_adj 
+		   NumMrtgOrigHomePurchPerUnit PctSubprimeConvOrigHomePur 
 		   forecl_ssl_1Kpcl_sf_condo forecl_ssl_sf_condo trustee_ssl_1Kpcl_sf_condo trustee_ssl_sf_condo 
 	       PctAnnChgRMPriceSf_1yr PctAnnChgRMPriceSf_5yr PctAnnChgRMPriceSf_10yr $profnum.;
 run;
@@ -374,21 +377,22 @@ data &topic.&geosuf._metadata;
 	if name = "NumOccupiedHsgUnits" then weborder = 1;
 	else if name = "PctSameHouse5YearsAgo" then weborder = 2;
 	else if name = "PctVacantHsgUnitsForRent" then weborder = 3;
-	else if name = "PctVacantHUForRent_m" then weborder = 4;
-	else if name = "PctOwnerOccupiedHsgUnits" then weborder = 5;
-	else if name = "PctOwnerOccupiedHU_m" then weborder = 6;
-	else if name = "sales_sf" then weborder = 7;
-	else if name = "mprice_sf" then weborder = 8;
-	else if name = "PctAnnChgRMPriceSf_10yr" then weborder = 9;
-	else if name = "PctAnnChgRMPriceSf_5yr" then weborder = 10;
-	else if name = "PctAnnChgRMPriceSf_1yr" then weborder = 11;
-	else if name = "NumMrtgOrigHomePurchPerUnit" then weborder = 12;
-	else if name = "MedianMrtgInc1_4m_adj" then weborder = 13;
-	else if name = "PctSubprimeConvOrigHomePur" then weborder = 14;
-	else if name = "forecl_ssl_sf_condo" then weborder = 15;
-	else if name = "forecl_ssl_1Kpcl_sf_condo" then weborder = 16;
-	else if name = "trustee_ssl_sf_condo" then weborder = 17;
-	else if name = "trustee_ssl_1Kpcl_sf_condo" then weborder = 18;
+	else if name = "NumOccupiedHsgUnits_m" then weborder = 4;
+	else if name = "PctVacantHUForRent_m" then weborder = 5;
+	else if name = "PctOwnerOccupiedHsgUnits" then weborder = 6;
+	else if name = "PctOwnerOccupiedHU_m" then weborder = 7;
+	else if name = "sales_sf" then weborder = 8;
+	else if name = "mprice_sf" then weborder = 9;
+	else if name = "PctAnnChgRMPriceSf_10yr" then weborder = 10;
+	else if name = "PctAnnChgRMPriceSf_5yr" then weborder = 11;
+	else if name = "PctAnnChgRMPriceSf_1yr" then weborder = 12;
+	else if name = "NumMrtgOrigHomePurchPerUnit" then weborder = 13;
+	else if name = "MedianMrtgInc1_4m_adj" then weborder = 14;
+	else if name = "PctSubprimeConvOrigHomePur" then weborder = 15;
+	else if name = "forecl_ssl_sf_condo" then weborder = 16;
+	else if name = "forecl_ssl_1Kpcl_sf_condo" then weborder = 17;
+	else if name = "trustee_ssl_sf_condo" then weborder = 18;
+	else if name = "trustee_ssl_1Kpcl_sf_condo" then weborder = 19;
 run;
 
 /* Output the metadata */
