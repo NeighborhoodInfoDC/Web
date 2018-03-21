@@ -80,6 +80,17 @@
   %end;
 
 
+/* Need to rename variables in NDCB 2010 */
+data rename_ncdb10;
+	set &ncdb10in.;
+
+	%if %upcase( &source_geo ) = COUNTY or
+	    %upcase( &source_geo ) = GEO2010 %then %do;
+	NumOccupiedHsgUnits = OCCHU1;
+	%end;
+run;
+
+
  /* Macro to create a _cnty suffix file for each _city dc file */
 %macro dc_county (in);
 data &in._cnty_long_allyr;
@@ -118,7 +129,7 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 
 	%else %if &ncdbyr. = 2010 %then %do;
 	length timeframe $ 15;
-	&ncdb10in.;
+	set rename_ncdb10;
 
 	start_date = '01jan10'd;
 	end_date = '31dec10'd;
@@ -148,8 +159,8 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 
 	timeframe = "&y_lbl." ;
 
-	start_date = '01jan11'd;
-	end_date = '31dec15'd;
+	start_date = '01jan12'd;
+	end_date = '31dec16'd;
 	format start_date end_date date9. ;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
@@ -174,16 +185,20 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
     %Pct_calc( var=PctVacantHsgUnitsForRent, label=Rental vacancy rate (%), num=NumVacantHsgUnitsForRent, den=NumRenterHsgUnits, years=1980 1990 2000 &acsyr. )
     %Pct_calc( var=PctOwnerOccupiedHsgUnits, label=Homeownership rate (%), num=NumOwnerOccupiedHsgUnits, den=NumOccupiedHsgUnits, years=1980 1990 2000 &acsyr. )
     
+%if &ncdbyr. = 2010 %then %do;
+	keep &geo._nf &geo. start_date end_date timeframe NumOccupiedHsgUnits_&ncdbyr. ;
+	rename 	NumOccupiedHsgUnits_&ncdbyr. =	NumOccupiedHsgUnits;
+%end;
 
-	keep &geo._nf &geo. start_date end_date timeframe
-		 NumOccupiedHsgUnits_&ncdbyr. PctSameHouse5YearsAgo_&ncdbyr. PctVacantHsgUnitsForRent_&ncdbyr. PctOwnerOccupiedHsgUnits_&ncdbyr.;
+%else %do;
+	keep &geo._nf &geo. start_date end_date timeframe NumOccupiedHsgUnits_&ncdbyr.
+		 PctSameHouse5YearsAgo_&ncdbyr. PctVacantHsgUnitsForRent_&ncdbyr. PctOwnerOccupiedHsgUnits_&ncdbyr. ;
 
-	rename 	NumOccupiedHsgUnits_&ncdbyr. =	NumOccupiedHsgUnits
-			PctSameHouse5YearsAgo_&ncdbyr. = PctSameHouse5YearsAgo
+	rename 	PctSameHouse5YearsAgo_&ncdbyr. = PctSameHouse5YearsAgo
 			PctVacantHsgUnitsForRent_&ncdbyr. = PctVacantHsgUnitsForRent
 			PctOwnerOccupiedHsgUnits_&ncdbyr. = PctOwnerOccupiedHsgUnits
-;
-
+			NumOccupiedHsgUnits_&ncdbyr. =	NumOccupiedHsgUnits;
+%end;
 
 %if &ds. = acs %then %do;
 
@@ -209,6 +224,7 @@ run;
 
 %ncdbloop (ncdb,1990);
 %ncdbloop (ncdb,2000);
+%ncdbloop (ncdb,2010);
 %ncdbloop (acs,acs);
 
 
@@ -272,14 +288,15 @@ data PctAnnChgRMPriceSf_&y.&geosuf.;
 
 data alldata_&topic.&geosuf.;
 	set Ncdb_acs_&topic.&geosuf. (in=a)
-		Ncdb_2000_&topic.&geosuf. (in=b) 
-		Ncdb_1990_&topic.&geosuf. (in=c) 
-		dcdata_&topic.&geosuf. (in=d) 
-		PctAnnChgRMPriceSf_1&geosuf. (in=e) 
-		PctAnnChgRMPriceSf_5&geosuf. (in=f) 
-		PctAnnChgRMPriceSf_10&geosuf. (in=g);
+		Ncdb_2010_&topic.&geosuf. (in=b) 
+		Ncdb_2000_&topic.&geosuf. (in=c) 
+		Ncdb_1990_&topic.&geosuf. (in=d) 
+		dcdata_&topic.&geosuf. (in=e) 
+		PctAnnChgRMPriceSf_1&geosuf. (in=f) 
+		PctAnnChgRMPriceSf_5&geosuf. (in=g) 
+		PctAnnChgRMPriceSf_10&geosuf. (in=h);
 
-	if a or b or c then do;
+	if a or b or c or d then do;
 	mprice_sf = .x;
 	sales_sf = .x;
 	MedianMrtgInc1_4m_adj = .x;
@@ -294,7 +311,7 @@ data alldata_&topic.&geosuf.;
 	PctAnnChgRMPriceSf_10yr = .x;
 	end;
 
-	else if d or e or f or g then do;
+	else if e or f or g or h then do;
 	NumOccupiedHsgUnits = .x;
 	PctSameHouse5YearsAgo = .x;
 	PctVacantHsgUnitsForRent = .x;
