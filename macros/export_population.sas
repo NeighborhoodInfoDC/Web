@@ -86,7 +86,8 @@
 data rename_ncdb10;
 	set &ncdb10in.;
 
-	%if %upcase( &source_geo ) = COUNTY %then %do;
+	%if %upcase( &source_geo ) = COUNTY or
+	    %upcase( &source_geo ) = GEO2010 %then %do;
 	TotPop_2010 = TRCTPOP1;
 	PopUnder18Years_2010 = CHILD1N;
 	Pop65andOverYears_2010 = OLD1N;
