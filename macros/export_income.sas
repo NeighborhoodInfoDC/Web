@@ -145,8 +145,8 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 
 	timeframe = "&y_lbl." ;
 
-	start_date = '01jan11'd;
-	end_date = '31dec15'd;
+	start_date = '01jan12'd;
+	end_date = '31dec16'd;
 	format start_date end_date date9. ;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
