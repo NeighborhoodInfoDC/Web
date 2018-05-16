@@ -82,6 +82,7 @@
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_cl17;
   %end;
 
+  %let lgeo = %lowcase( &geo. );
 
 %macro dc_county (in);
 data &in._cnty_long_allyr;
@@ -119,6 +120,13 @@ data &topic.&geosuf.;
 		  ;
 
 	format Crimes_pt1_violent_per1000 Crimes_pt1_property_per1000 $profnum.;
+run;
+
+/* Lowercase the geo variable names */
+proc datasets lib=work nolist;
+	modify &topic.&geosuf.;
+	rename &geo. = &lgeo.;
+	rename &geo._nf = &lgeo._nf;
 run;
 
 

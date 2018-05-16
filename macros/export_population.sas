@@ -79,6 +79,9 @@
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_cl17;
   %end;
 
+
+%let lgeo = %lowcase( &geo. );
+
 %macro ncdbloop (ds,ncdbyr);
 
 
@@ -432,6 +435,13 @@ data &topic.&geosuf.;
 		   PctAsianPINonHispBridge PctFamiliesOwnChildrenFH PctChgTotPop PctChgPopUnder18Years PctChgPop65andOverYear Totpop_m
 		   PctPopUnder18Years_m PctPop65andOverYears_m PctForeignBorn_m PctBlackNonHispBridge_m PctWhiteNonHispBridge_m PctHisp_m
 		   PctAPINonHispBridge_m PctFamiliesOwnChildFH_m $profnum.;
+run;
+
+/* Lowercase the geo variable names */
+proc datasets lib=work nolist;
+	modify &topic.&geosuf.;
+	rename &geo. = &lgeo.;
+	rename &geo._nf = &lgeo._nf;
 run;
 
 

@@ -79,6 +79,8 @@
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_cl17;
   %end;
 
+  %let lgeo = %lowcase( &geo. );
+
 
 %macro ncdbloop (ds,ncdbyr);
 
@@ -242,6 +244,13 @@ data &topic.&geosuf.;
 		  ;
 
 	format PctUnemployed Pct16andOverEmployed PctUnemployed_m Pct16andOverEmployed_m $profnum.;
+run;
+
+/* Lowercase the geo variable names */
+proc datasets lib=work nolist;
+	modify &topic.&geosuf.;
+	rename &geo. = &lgeo.;
+	rename &geo._nf = &lgeo._nf;
 run;
 
 

@@ -79,6 +79,8 @@
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_cl17;
   %end;
 
+  %let lgeo = %lowcase( &geo. );
+
 %macro ncdbloop (ds,ncdbyr);
 
 %macro dc_county (in);
@@ -194,17 +196,17 @@ run;
 
 
 data alldata_&topic.&geosuf.;
-	set msf_sum&geosuf._long_allyr (in=a) 
-		Ncdb_acs_&topic.&geosuf. (in=b) 
-		Ncdb_2000_&topic.&geosuf. (in=c) 
-		Ncdb_1990_&topic.&geosuf. (in=d);
+	set Ncdb_acs_&topic.&geosuf. (in=a) 
+		Ncdb_2000_&topic.&geosuf. (in=b) 
+		Ncdb_1990_&topic.&geosuf. (in=c)
+		msf_sum&geosuf._long_allyr (in=d) ;
 
-	if a then do;
+	if d then do;
 	Pct25andOverWoutHS = .x;
 	Pct25andOverWoutHS_m =.x;
 	end;
 
-	else if b or c or d then do;
+	else if a or b or c then do;
 	aud =.x;
 	aud_charter =.x;
 	aud_dcps =.x;
@@ -245,6 +247,13 @@ data &topic.&geosuf.;
 		  ;
 
 	format Pct25andOverWoutHS Pct25andOverWoutHS_m aud aud_charter aud_dcps charter_present dcps_present school_present $profnum.;
+run;
+
+/* Lowercase the geo variable names */
+proc datasets lib=work nolist;
+	modify &topic.&geosuf.;
+	rename &geo. = &lgeo.;
+	rename &geo._nf = &lgeo._nf;
 run;
 
 

@@ -79,6 +79,8 @@
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_cl17;
   %end;
 
+  %let lgeo = %lowcase( &geo. );
+
 
 /* Need to rename variables in NDCB 2010 */
 data rename_ncdb10;
@@ -364,6 +366,13 @@ data &topic.&geosuf.;
 		   NumMrtgOrigHomePurchPerUnit PctSubprimeConvOrigHomePur 
 		   forecl_ssl_1Kpcl_sf_condo forecl_ssl_sf_condo trustee_ssl_1Kpcl_sf_condo trustee_ssl_sf_condo 
 	       PctAnnChgRMPriceSf_1yr PctAnnChgRMPriceSf_5yr PctAnnChgRMPriceSf_10yr $profnum.;
+run;
+
+/* Lowercase the geo variable names */
+proc datasets lib=work nolist;
+	modify &topic.&geosuf.;
+	rename &geo. = &lgeo.;
+	rename &geo._nf = &lgeo._nf;
 run;
 
 
