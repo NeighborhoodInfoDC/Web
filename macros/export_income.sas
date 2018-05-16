@@ -79,6 +79,8 @@
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_cl17;
   %end;
 
+  %let lgeo = %lowcase( &geo. );
+
 %macro ncdbloop (ds,ncdbyr);
 
 %macro dc_county (in);
@@ -103,6 +105,7 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 
 	start_date = '01jan90'd;
 	end_date = '31dec90'd;
+	%let ifromyr = 1989;
 	%end;
 
 	%else %if &ncdbyr. = 2000 %then %do;
@@ -111,6 +114,7 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 
 	start_date = '01jan00'd;
 	end_date = '31dec00'd;
+	%let ifromyr = 1999;
 	%end;
 
 	%else %if &ncdbyr. = 2010 %then %do;
@@ -119,6 +123,7 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 
 	start_date = '01jan10'd;
 	end_date = '31dec10'd;
+	%let ifromyr = 1999;
 	%end;
 
 	format start_date end_date date9. ;
@@ -148,6 +153,7 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 	start_date = '01jan12'd;
 	end_date = '31dec16'd;
 	format start_date end_date date9. ;
+	%let ifromyr = 2016;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
 	ucounty=substr(geo2010,1,5);
@@ -165,7 +171,7 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 	%Pct_calc( var=PctPoorChildren, label=% children in poverty, num=PopPoorChildren, den=ChildrenPovertyDefined, years=&ncdbyr. );
 	%Pct_calc( var=PctPoorElderly, label=% seniors in poverty, num=PopPoorElderly, den=ElderlyPovertyDefined, years=&ncdbyr. );
 	%Pct_calc( var=AvgFamilyIncome, label=Average family income last year ($), num=AggFamilyIncome, den=NumFamilies, mult=1, years=&ncdbyr. );
-	%dollar_convert( AvgFamilyIncome_&ncdbyr., AvgFamilyIncAdj_&ncdbyr., &acs_infl_yr., &inc_dollar_yr. );
+	%dollar_convert( AvgFamilyIncome_&ncdbyr., AvgFamilyIncAdj_&ncdbyr., &ifromyr., &inc_dollar_yr. );
 
 	keep &geo._nf &geo. start_date end_date timeframe
 		 PctPoorPersons_&ncdbyr. PctPoorChildren_&ncdbyr. PctPoorElderly_&ncdbyr. AvgFamilyIncAdj_&ncdbyr. 
@@ -245,7 +251,7 @@ data ch_&topic.&geosuf._1990_2000;
 	%end;
 
 	/* ACS timeframe */
-	timeframe = "1990 to 2000" ;
+	timeframe = "2000" ;
 
 	/* Populate start and end dates */
 	start_date = '01jan90'd;
@@ -271,7 +277,7 @@ data ch_&topic.&geosuf._2000_ACS;
 
 	/* ACS timeframe */
 	
-	timeframe = "2000 to 2012-16" ;
+	timeframe = "2012-16" ;
 
 	/* Populate start and end dates */
 	start_date = '01jan00'd;
@@ -293,6 +299,7 @@ data tanf_fs&geosuf.;
 run;
 
 data alldata_&topic.&geosuf.;
+	length timeframe $ 15;
 	set Ncdb_acs_&topic.&geosuf. (in=a) 
 		Ncdb_2000_&topic.&geosuf. (in=b) 
 		Ncdb_1990_&topic.&geosuf. (in=c) 
@@ -368,6 +375,12 @@ data &topic.&geosuf.;
 	       Fs_client Tanf_client $profnum.;
 run;
 
+/* Lowercase the geo variable names */
+proc datasets lib=work nolist;
+	modify &topic.&geosuf.;
+	rename &geo. = &lgeo.;
+	rename &geo._nf = &lgeo._nf;
+run;
 
 /* Create metadata for the dataset */
 proc contents data = &topic.&geosuf. out = &topic.&geosuf._metadata_order noprint;
