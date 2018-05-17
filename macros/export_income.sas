@@ -123,7 +123,7 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 
 	start_date = '01jan10'd;
 	end_date = '31dec10'd;
-	%let ifromyr = 1999;
+	%let ifromyr = 2009;
 	%end;
 
 	format start_date end_date date9. ;
@@ -194,7 +194,7 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
       %Moe_ratio( num=AggFamilyIncome_&acsyr., den=NumFamilies_&acsyr., 
                   num_moe=mAggFamilyIncome_&acsyr., den_moe=mNumFamilies_&acsyr. );
 
-	%dollar_convert( AvgFamilyIncome_m_&acsyr., AvgFamilyIncAdj_m_&acsyr., &acs_infl_yr., &inc_dollar_yr );
+	%dollar_convert( AvgFamilyIncome_m_&acsyr., AvgFamilyIncAdj_m_&acsyr., &ifromyr., &inc_dollar_yr );
 
 	keep PctPoorPersons_m_&acsyr. PctPoorChildren_m_&acsyr. PctPoorElderly_m_&acsyr. AvgFamilyIncAdj_m_&acsyr. ;
 
@@ -227,8 +227,8 @@ data ch_&topic.&geosuf.;
 
 	%Pct_calc( var=AvgFamilyIncome, label=Average family income last year ($), num=AggFamilyIncome, den=NumFamilies, mult=1, years=1990 2000 &acsyr. )
 
-	%dollar_convert( AvgFamilyIncome_1990, AvgFamilyIncAdj_1990, 1990, &inc_dollar_yr. );
-	%dollar_convert( AvgFamilyIncome_2000, AvgFamilyIncAdj_2000, 2000, &inc_dollar_yr. );
+	%dollar_convert( AvgFamilyIncome_1990, AvgFamilyIncAdj_1990, 1989, &inc_dollar_yr. );
+	%dollar_convert( AvgFamilyIncome_2000, AvgFamilyIncAdj_2000, 1999, &inc_dollar_yr. );
 	%dollar_convert( AvgFamilyIncome_&acsyr., AvgFamilyIncAdj_&acsyr., &acs_infl_yr., &inc_dollar_yr. );
 
 	 if AvgFamilyIncAdj_1990 > 0 then PctChgAvgFamilyIncAdj_1990_2000 = %pctchg( AvgFamilyIncAdj_1990, AvgFamilyIncAdj_2000 );
