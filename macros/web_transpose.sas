@@ -160,7 +160,13 @@ data &indata._&TypeOfDat._long;
 	by &Sortvar. timeframe;
 	start_date = mdy(01, 01, timeframe);
 	end_date = mdy(12, 31, timeframe); 
-	&sortvar._nf = &sortvar.;
+
+	%if %upcase( &source_geo ) = CL17 %then %do;
+		%fix_cl17_fmt;
+	%end;
+	%else %do;
+		&sortvar._nf = &sortvar.;
+	%end;
 run;
 
 
