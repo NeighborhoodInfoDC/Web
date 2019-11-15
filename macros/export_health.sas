@@ -88,9 +88,9 @@
 %macro dc_county (in);
 data &in._cnty_long_allyr;
 	set &in._city_long_allyr;
-	county = "11001";
+	County = "11001";
 	drop city city_nf;
-	county_nf = county;
+	County_nf = county;
 run;
 %mend dc_county;
 %dc_county (Births_sum);
@@ -126,7 +126,9 @@ run;
 /* Lowercase the geo variable names */
 proc datasets lib=work nolist;
 	modify &topic.&geosuf.;
-	rename &geo. = &lgeo.;
+	%if %upcase( &source_geo ) ^= CL17 %then %do;
+		rename &geo. = &lgeo.;
+	%end;
 	rename &geo._nf = &lgeo._nf;
 run;
 
