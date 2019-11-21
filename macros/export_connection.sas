@@ -164,12 +164,24 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 
 	%Pct_calc( var=PctHshldPhone, label=% HHs with a phone, num=NumHshldPhone, den=NumOccupiedHsgUnits, years=&ncdbyr. )
     %Pct_calc( var=PctHshldCar, label=% HHs with a car, num=NumHshldCar, den=NumOccupiedHsgUnits, years=&ncdbyr. )
+	%Pct_calc( var=PctBroadband, label=% HHs with broadband internet subscription, num=Numbroadband, den=Numhhdefined, years=&ncdbyr. )
+	%Pct_calc( var=PctSmartphoneonly, label=% HHs with Smartphone and no other computer, num=NumSmartphoneonly, den=numhshlds, years=&ncdbyr. )
+	%Pct_calc( var=PctNocomputer, label=% HHs with no computing devices, num=NumNocomputer, den=numhshlds, years=&ncdbyr. )
+	%Pct_calc( var=Pctcellularonly, label=% HHs with cell data plan and no other internet, num=Numcellularonly, den=numhshlds, years=&ncdbyr. )
+	%Pct_calc( var=Pctnointernet, label=% HHs with no internet access, num=Numnointernet, den=numhshlds, years=&ncdbyr. )
+
+	
     
 	keep &geo._nf &geo. start_date end_date timeframe
-		 PctHshldPhone_&ncdbyr. PctHshldCar_&ncdbyr. ;
+		 PctHshldPhone_&ncdbyr. PctHshldCar_&ncdbyr. PctBroadband_&ncdbyr.
+		 PctNocomputer_&ncdbyr. Pctcellularonly_&ncdbyr. Pctnointernet_&ncdbyr.;
 
 	rename 	PctHshldPhone_&ncdbyr. = PctHshldPhone
 			PctHshldCar_&ncdbyr. = PctHshldCar
+			PctBroadband_&ncdbyr. = PctBroadband
+			PctNocomputer_&ncdbyr. = PctNocomputer
+			Pctcellularonly_&ncdbyr. = Pctcellularonly
+			Pctnointernet_&ncdbyr. = Pctnointernet
 ;
 
 
@@ -181,11 +193,28 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
     %Moe_prop_a( var=PctHshldCar_m_&acsyr., mult=100, num=NumHshldCar_&acsyr., den=NumOccupiedHsgUnits_&acsyr., 
                        num_moe=mNumHshldCar_&acsyr., den_moe=mNumOccupiedHsgUnits_&acsyr. );
 
+	%Moe_prop_a( var=PctBroadband_m_&acsyr., num=Numbroadband_&acsyr., den=Numhhdefined_&acsyr., 
+                       num_moe=mNumbroadband_&acsyr., den_moe=mNumhhdefined_&acsyr. );
 
-	keep PctHshldPhone_m_&acsyr. PctHshldCar_m_&acsyr.;
+	%Moe_prop_a( var=PctNocomputer_m_&acsyr., num=NumNocomputer_&acsyr., den=numhshlds_&acsyr., 
+                       num_moe=mNumNocomputer_&acsyr., den_moe=mnumhshlds_&acsyr. );
+
+	%Moe_prop_a( var=Pctcellularonly_m_&acsyr., num=Numcellularonly_&acsyr., den=numhshlds_&acsyr., 
+                       num_moe=mNumcellularonly_&acsyr., den_moe=mnumhshlds_&acsyr. );
+
+	%Moe_prop_a( var=Pctnointernet_m_&acsyr., num=Numnointernet_&acsyr., den=numhshlds_&acsyr., 
+                       num_moe=mNumnointernet_&acsyr., den_moe=mnumhshlds_&acsyr. );
+
+
+	keep PctHshldPhone_m_&acsyr. PctHshldCar_m_&acsyr. PctBroadband_m_&acsyr.
+		 PctNocomputer_m_&acsyr. Pctcellularonly_m_&acsyr. Pctnointernet_m_&acsyr.;
 
 	rename 	PctHshldPhone_m_&acsyr. = PctHshldPhone_m
 			PctHshldCar_m_&acsyr. = PctHshldCar_m
+			PctBroadband_m_&acsyr. = PctBroadband_m
+			PctNocomputer_m_&acsyr. = PctNocomputer_m
+			Pctcellularonly_m_&acsyr. = Pctcellularonly_m
+			Pctnointernet_m_&acsyr. = Pctnointernet_m
 			;
 
 %end;
@@ -221,11 +250,20 @@ data &topic.&geosuf.;
 
 	label 	PctHshldPhone = "% HHs with a phone"
 			PctHshldCar = "% HHs with a car"
+			PctBroadband = "% HHs with broadband internet subscription"
 			PctHshldPhone_m = "% HHs with a phone MOE"
 			PctHshldCar_m = "% HHs with a car MOE"
+			PctBroadband_m = "% HHs with broadband internet subscription MOE"
+			PctNocomputer = "% HHs with no computing devices"
+			PctNocomputer_m = "% HHs with no computing devices MOE"
+			Pctcellularonly = "% HHs with cell data plan and no other internet"
+			Pctcellularonly_m = "% HHs with cell data plan and no other internet MOE"
+			Pctnointernet = "% HHs with no internet access"
+			Pctnointernet_m = "% HHs with no internet access MOE"
+
 		  ;
 
-	format PctHshldPhone PctHshldCar PctHshldPhone_m PctHshldCar_m $profnum.;
+	format PctHshldPhone PctHshldCar PctHshldPhone_m PctHshldCar_m PctBroadband PctBroadband_m $profnum.;
 run;
 
 /* Lowercase the geo variable names */
@@ -247,6 +285,15 @@ data &topic.&geosuf._metadata;
 	else if name = "PctHshldCar_m" then weborder = 2;
 	else if name = "PctHshldPhone" then weborder = 3;
 	else if name = "PctHshldPhone_m" then weborder = 4;
+	else if name = "PctBroadband" then weborder = 5;
+	else if name = "PctBroadband_m" then weborder = 6;
+	else if name = "PctNocomputer" then weborder = 7;
+	else if name = "PctNocomputer_m" then weborder = 8;
+	else if name = "Pctcellularonly" then weborder = 9;
+	else if name = "Pctcellularonly_m" then weborder = 10;
+	else if name = "Pctnointernet" then weborder = 11;
+	else if name = "Pctnointernet_m" then weborder = 12;
+
 run;
 
 
