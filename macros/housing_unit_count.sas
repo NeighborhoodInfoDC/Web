@@ -13,7 +13,7 @@
 %macro housing_unit_count (source_geo);
 
 
-%if %upcase( &source_geo ) = GEO2010 %then %do;
+%if %upcase( &source_geo ) = TR10 %then %do;
      %let sortvar = GEO2010;
      %let TypeOfDat = TR10;
      %let geosuf = _tr10;
@@ -59,6 +59,7 @@
  %else %if %upcase( &source_geo ) = PSA12 %then %do;
      %let sortvar = PSA2012;
      %let TypeOfDat = PSA12;
+	 %let geosuf = _psa12;
      %let ncdb00in = ncdb.Ncdb_sum_psa12;
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_psa12;
   %end;
@@ -86,7 +87,13 @@ data ncdb_hu_count&geosuf.;
 	merge ncdb00&geosuf. ncdb10&geosuf.;
 	by &sortvar.;
 	HUnits_2000 = NumHsgUnits_2000;
+
+	%if %upcase( &source_geo ) = TR10 %then %do;
+	HUnits_2010 = TOTHSUN1;
+	%end;
+	%else %do;
 	HUnits_2010 = NumHsgUnits_2010;
+	%end;
 
 	/* Calculate interval var from 2000 and 2010 counts */
 	intval = (HUnits_2010-HUnits_2000)/10;
