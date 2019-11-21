@@ -60,6 +60,7 @@
 %include "&_dcdata_default_path.\realprop\prog\sales_forweb.sas";
 %include "&_dcdata_default_path.\hmda\prog\hmda_forweb.sas";
 %include "&_dcdata_default_path.\rod\prog\foreclosure_forweb.sas";
+%include "&_dcdata_default_path.\Web\macros\permits_forweb.sas";
 
 %export_housing (geo2010);
 %export_housing (county);
