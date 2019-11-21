@@ -232,7 +232,7 @@ run;
 
 
 data dcdata_&topic.&geosuf.;
-	merge Sales_sum&geosuf._long_allyr Hmda_sum&geosuf._long_allyr fcl&geosuf._long_allyr;
+	merge Sales_sum&geosuf._long_allyr Hmda_sum&geosuf._long_allyr fcl&geosuf._long_allyr Permits_sum&geosuf._long_allyr;
 	by &geo.;
 	&geo._nf = &geo.;
 run;
@@ -365,7 +365,7 @@ data &topic.&geosuf.;
 		   PctOwnerOccupiedHU_m NumOccupiedHsgUnits_m mprice_sf sales_sf MedianMrtgInc1_4m_adj 
 		   NumMrtgOrigHomePurchPerUnit PctSubprimeConvOrigHomePur 
 		   forecl_ssl_1Kpcl_sf_condo forecl_ssl_sf_condo trustee_ssl_1Kpcl_sf_condo trustee_ssl_sf_condo 
-	       PctAnnChgRMPriceSf_1yr PctAnnChgRMPriceSf_5yr PctAnnChgRMPriceSf_10yr $profnum.;
+	       PctAnnChgRMPriceSf_1yr PctAnnChgRMPriceSf_5yr PctAnnChgRMPriceSf_10yr permits $profnum.;
 run;
 
 /* Lowercase the geo variable names */
