@@ -15,68 +15,77 @@
 %let topic = housing ;
 
 %if %upcase( &source_geo ) = GEO2010 %then %do;
-     %let geo = geo2010;
+     %let geo = Geo2010;
      %let geosuf = _tr10;
      %let ncdb00in = ncdb.Ncdb_sum_was15_tr10;
 	 %let ncdb10in = ncdb.Ncdb_2010_was15;
 	 %let acsin = acs.acs_&acsyr._dc_sum_tr_tr10 acs.acs_&acsyr._md_sum_tr_tr10 acs.acs_&acsyr._va_sum_tr_tr10 acs.acs_&acsyr._wv_sum_tr_tr10;
+	 %let prevacsin = acs.acs_&prevacsyr._dc_sum_tr_tr10 acs.acs_&prevacsyr._md_sum_tr_tr10 acs.acs_&prevacsyr._va_sum_tr_tr10 acs.acs_&prevacsyr._wv_sum_tr_tr10;
   %end;
 %else %if %upcase( &source_geo ) = COUNTY %then %do;
   	 %ncdb_cnty;
-     %let geo = county;
+     %let geo = County;
      %let geosuf = _cnty;
      %let ncdb00in = work.Ncdb_sum_was15_cnty;
 	 %let ncdb10in = work.Ncdb_2010_sum_was15_cnty;
 	 %let acsin = acs.acs_&acsyr._dc_sum_regcnt_regcnt acs.acs_&acsyr._md_sum_regcnt_regcnt acs.acs_&acsyr._va_sum_regcnt_regcnt acs.acs_&acsyr._wv_sum_regcnt_regcnt;
+	 %let prevacsin = acs.acs_&prevacsyr._dc_sum_regcnt_regcnt acs.acs_&prevacsyr._md_sum_regcnt_regcnt acs.acs_&prevacsyr._va_sum_regcnt_regcnt acs.acs_&prevacsyr._wv_sum_regcnt_regcnt;
   %end;
 %else %if %upcase( &source_geo ) = CITY %then %do;
-     %let geo = city;
+     %let geo = City;
      %let geosuf = _city;
      %let ncdb00in = ncdb.Ncdb_sum_city;
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_city;
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_city;
+	 %let prevacsin = Acs.Acs_&prevacsyr._dc_sum_tr_city;
   %end;
 %else %if %upcase( &source_geo ) = WD12 %then %do;
-     %let geo = ward2012;
+     %let geo = Ward2012;
      %let geosuf = _wd12;
      %let ncdb00in = ncdb.Ncdb_sum_wd12;
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_wd12;
-	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_wd12;
+	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_wd12 ;
+	 %let prevacsin = Acs.Acs_&prevacsyr._dc_sum_tr_wd12;
   %end;
 %else %if %upcase( &source_geo ) = ANC12 %then %do;
-     %let geo = anc2012;
+     %let geo = Anc2012;
      %let geosuf = _anc12;
      %let ncdb00in = ncdb.Ncdb_sum_anc12;
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_anc12;
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_anc12;
+	 %let prevacsin = Acs.Acs_&prevacsyr._dc_sum_tr_anc12;
   %end;
  %else %if %upcase( &source_geo ) = CLTR00 %then %do;
-     %let geo = cluster_tr2000;
+     %let geo = Cluster_tr2000;
      %let geosuf = _cltr00 ;
      %let ncdb00in = ncdb.Ncdb_sum_cltr00;
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_cltr00;
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_cltr00;
+	 %let prevacsin = Acs.Acs_&prevacsyr._dc_sum_tr_cltr00;
   %end;
  %else %if %upcase( &source_geo ) = PSA12 %then %do;
-     %let geo = psa2012;
+     %let geo = Psa2012;
      %let geosuf = _psa12;
      %let ncdb00in = ncdb.Ncdb_sum_psa12;
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_psa12;
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_psa12;
+	 %let prevacsin = Acs.Acs_&prevacsyr._dc_sum_tr_psa12;
   %end;
  %else %if %upcase( &source_geo ) = ZIP %then %do;
-     %let geo = zip;
+     %let geo = Zip;
      %let geosuf = _zip;
      %let ncdb00in = ncdb.Ncdb_sum_zip;
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_zip;
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_zip;
+	 %let prevacsin = Acs.Acs_&prevacsyr._dc_sum_tr_zip;
   %end;
  %else %if %upcase( &source_geo ) = CL17 %then %do;
-     %let geo = cluster2017;
+     %let geo = Cluster2017;
      %let geosuf = _cl17;
      %let ncdb00in = ncdb.Ncdb_sum_cl17;
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_cl17;
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_cl17;
+	 %let prevacsin = Acs.Acs_&prevacsyr._dc_sum_tr_cl17;
   %end;
 
   %let lgeo = %lowcase( &geo. );
@@ -151,6 +160,30 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 	timeframe = "&ncdbyr" ;
 %end;
 
+%else %if &ds. = prevacs %then %do;
+	%let ncdbyr = &prevacsyr.;
+
+	length timeframe $ 15;
+	set &prevacsin.;
+
+	&geo._nf = &geo.;
+
+	timeframe = "&py_lbl." ;
+
+	%let sy = %substr(&prevacsyr.,3,2);
+	%let ey = %substr(&prevacsyr.,6,2);
+
+	start_date = "01jan&sy."d;
+	end_date = "31dec&ey."d;
+	format start_date end_date date9. ;
+
+	%if %upcase( &source_geo ) = GEO2010 %then %do;
+	ucounty=substr(geo2010,1,5);
+	%define_dcmetro (countyvar = ucounty);
+	%end;
+
+%end;
+
 %else %do;
 	%let ncdbyr = &acsyr.;
 
@@ -161,8 +194,11 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 
 	timeframe = "&y_lbl." ;
 
-	start_date = '01jan12'd;
-	end_date = '31dec16'd;
+	%let sy = %substr(&acsyr.,3,2);
+	%let ey = %substr(&acsyr.,6,2);
+
+	start_date = "01jan&sy."d;
+	end_date = "31dec&ey."d;
 	format start_date end_date date9. ;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
@@ -202,20 +238,20 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 			NumOccupiedHsgUnits_&ncdbyr. =	NumOccupiedHsgUnits;
 %end;
 
-%if &ds. = acs %then %do;
+%if &ds. = acs or &ds. = prevacs %then %do;
 
-    %Moe_prop_a( var=PctVacantHUForRent_m_&acsyr., mult=100, num=NumVacantHsgUnitsForRent_&acsyr., den=NumRenterHsgUnits_&acsyr., 
-                       num_moe=mNumVacantHUForRent_&acsyr., den_moe=mNumRenterHsgUnits_&acsyr. );
+    %Moe_prop_a( var=PctVacantHUForRent_m_&ncdbyr., mult=100, num=NumVacantHsgUnitsForRent_&ncdbyr., den=NumRenterHsgUnits_&ncdbyr., 
+                       num_moe=mNumVacantHUForRent_&ncdbyr., den_moe=mNumRenterHsgUnits_&ncdbyr. );
     
-    %Moe_prop_a( var=PctOwnerOccupiedHU_m_&acsyr., mult=100, num=NumOwnerOccupiedHsgUnits_&acsyr., den=NumOccupiedHsgUnits_&acsyr., 
-                       num_moe=mNumOwnerOccupiedHU_&acsyr., den_moe=mNumOccupiedHsgUnits_&acsyr. );
+    %Moe_prop_a( var=PctOwnerOccupiedHU_m_&ncdbyr., mult=100, num=NumOwnerOccupiedHsgUnits_&ncdbyr., den=NumOccupiedHsgUnits_&ncdbyr., 
+                       num_moe=mNumOwnerOccupiedHU_&ncdbyr., den_moe=mNumOccupiedHsgUnits_&ncdbyr. );
 
 
-	keep PctVacantHUForRent_m_&acsyr. PctOwnerOccupiedHU_m_&acsyr. mNumOccupiedHsgUnits_&acsyr.;
+	keep PctVacantHUForRent_m_&ncdbyr. PctOwnerOccupiedHU_m_&ncdbyr. mNumOccupiedHsgUnits_&ncdbyr.;
 
-	rename 	PctVacantHUForRent_m_&acsyr. = PctVacantHUForRent_m
-			PctOwnerOccupiedHU_m_&acsyr. = PctOwnerOccupiedHU_m
-			mNumOccupiedHsgUnits_&acsyr. = NumOccupiedHsgUnits_m
+	rename 	PctVacantHUForRent_m_&ncdbyr. = PctVacantHUForRent_m
+			PctOwnerOccupiedHU_m_&ncdbyr. = PctOwnerOccupiedHU_m
+			mNumOccupiedHsgUnits_&ncdbyr. = NumOccupiedHsgUnits_m
 			;
 
 %end;
@@ -229,6 +265,7 @@ run;
 %ncdbloop (ncdb,2000);
 %ncdbloop (ncdb,2010);
 %ncdbloop (acs,acs);
+%ncdbloop (prevacs,prevacs);
 
 
 data dcdata_&topic.&geosuf.;
@@ -291,15 +328,16 @@ data PctAnnChgRMPriceSf_&y.&geosuf.;
 
 data alldata_&topic.&geosuf.;
 	set Ncdb_acs_&topic.&geosuf. (in=a)
-		Ncdb_2010_&topic.&geosuf. (in=b) 
-		Ncdb_2000_&topic.&geosuf. (in=c) 
-		Ncdb_1990_&topic.&geosuf. (in=d) 
-		dcdata_&topic.&geosuf. (in=e) 
-		PctAnnChgRMPriceSf_1&geosuf. (in=f) 
-		PctAnnChgRMPriceSf_5&geosuf. (in=g) 
-		PctAnnChgRMPriceSf_10&geosuf. (in=h);
+		Ncdb_prevacs_&topic.&geosuf. (in=b)
+		Ncdb_2010_&topic.&geosuf. (in=c) 
+		Ncdb_2000_&topic.&geosuf. (in=d) 
+		Ncdb_1990_&topic.&geosuf. (in=e) 
+		dcdata_&topic.&geosuf. (in=f) 
+		PctAnnChgRMPriceSf_1&geosuf. (in=g) 
+		PctAnnChgRMPriceSf_5&geosuf. (in=h) 
+		PctAnnChgRMPriceSf_10&geosuf. (in=i);
 
-	if a or b or c or d then do;
+	if a or b or c or d or e then do;
 	mprice_sf = .x;
 	sales_sf = .x;
 	MedianMrtgInc1_4m_adj = .x;
@@ -314,7 +352,7 @@ data alldata_&topic.&geosuf.;
 	PctAnnChgRMPriceSf_10yr = .x;
 	end;
 
-	else if e or f or g or h then do;
+	else if f or g or h or i then do;
 	NumOccupiedHsgUnits = .x;
 	PctSameHouse5YearsAgo = .x;
 	PctVacantHsgUnitsForRent = .x;
@@ -329,7 +367,11 @@ run;
 				  out_check = checked_&topic.&geosuf.);
 
 data &topic.&geosuf.;
-	set checked_&topic.&geosuf.;
+		set checked_&topic.&geosuf. 
+
+		/* Lowercase the geo variable names */
+		(rename=(&geo=%sysfunc(lowcase(&geo.))
+		 &geo._nf=%sysfunc(lowcase(&geo._nf)))) ;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
 	ucounty=substr(geo2010,1,5);
@@ -368,12 +410,12 @@ data &topic.&geosuf.;
 	       PctAnnChgRMPriceSf_1yr PctAnnChgRMPriceSf_5yr PctAnnChgRMPriceSf_10yr permits $profnum.;
 run;
 
-/* Lowercase the geo variable names */
+/* Lowercase the geo variable names 
 proc datasets lib=work nolist;
 	modify &topic.&geosuf.;
 	rename &geo. = &lgeo.;
 	rename &geo._nf = &lgeo._nf;
-run;
+run;*/
 
 
 /* Create metadata for the dataset */
