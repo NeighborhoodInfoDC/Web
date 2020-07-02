@@ -15,71 +15,78 @@
 %let topic = connection ;
 
 %if %upcase( &source_geo ) = GEO2010 %then %do;
-     %let geo = geo2010;
+     %let geo = Geo2010;
      %let geosuf = _tr10;
      %let ncdb00in = ncdb.Ncdb_sum_was15_tr10;
 	 %let ncdb10in = ncdb.Ncdb_2010_was15;
 	 %let acsin = acs.acs_&acsyr._dc_sum_tr_tr10 acs.acs_&acsyr._md_sum_tr_tr10 acs.acs_&acsyr._va_sum_tr_tr10 acs.acs_&acsyr._wv_sum_tr_tr10;
+	 %let prevacsin = acs.acs_&prevacsyr._dc_sum_tr_tr10 acs.acs_&prevacsyr._md_sum_tr_tr10 acs.acs_&prevacsyr._va_sum_tr_tr10 acs.acs_&prevacsyr._wv_sum_tr_tr10;
   %end;
 %else %if %upcase( &source_geo ) = COUNTY %then %do;
   	 %ncdb_cnty;
-     %let geo = county;
+     %let geo = County;
      %let geosuf = _cnty;
      %let ncdb00in = work.Ncdb_sum_was15_cnty;
 	 %let ncdb10in = work.Ncdb_2010_sum_was15_cnty;
 	 %let acsin = acs.acs_&acsyr._dc_sum_regcnt_regcnt acs.acs_&acsyr._md_sum_regcnt_regcnt acs.acs_&acsyr._va_sum_regcnt_regcnt acs.acs_&acsyr._wv_sum_regcnt_regcnt;
+	 %let prevacsin = acs.acs_&prevacsyr._dc_sum_regcnt_regcnt acs.acs_&prevacsyr._md_sum_regcnt_regcnt acs.acs_&prevacsyr._va_sum_regcnt_regcnt acs.acs_&prevacsyr._wv_sum_regcnt_regcnt;
   %end;
 %else %if %upcase( &source_geo ) = CITY %then %do;
-     %let geo = city;
+     %let geo = City;
      %let geosuf = _city;
      %let ncdb00in = ncdb.Ncdb_sum_city;
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_city;
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_city;
+	 %let prevacsin = Acs.Acs_&prevacsyr._dc_sum_tr_city;
   %end;
 %else %if %upcase( &source_geo ) = WD12 %then %do;
-     %let geo = ward2012;
+     %let geo = Ward2012;
      %let geosuf = _wd12;
      %let ncdb00in = ncdb.Ncdb_sum_wd12;
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_wd12;
-	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_wd12;
+	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_wd12 ;
+	 %let prevacsin = Acs.Acs_&prevacsyr._dc_sum_tr_wd12;
   %end;
 %else %if %upcase( &source_geo ) = ANC12 %then %do;
-     %let geo = anc2012;
+     %let geo = Anc2012;
      %let geosuf = _anc12;
      %let ncdb00in = ncdb.Ncdb_sum_anc12;
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_anc12;
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_anc12;
+	 %let prevacsin = Acs.Acs_&prevacsyr._dc_sum_tr_anc12;
   %end;
  %else %if %upcase( &source_geo ) = CLTR00 %then %do;
-     %let geo = cluster_tr2000;
+     %let geo = Cluster_tr2000;
      %let geosuf = _cltr00 ;
      %let ncdb00in = ncdb.Ncdb_sum_cltr00;
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_cltr00;
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_cltr00;
+	 %let prevacsin = Acs.Acs_&prevacsyr._dc_sum_tr_cltr00;
   %end;
  %else %if %upcase( &source_geo ) = PSA12 %then %do;
-     %let geo = psa2012;
+     %let geo = Psa2012;
      %let geosuf = _psa12;
      %let ncdb00in = ncdb.Ncdb_sum_psa12;
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_psa12;
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_psa12;
+	 %let prevacsin = Acs.Acs_&prevacsyr._dc_sum_tr_psa12;
   %end;
  %else %if %upcase( &source_geo ) = ZIP %then %do;
-     %let geo = zip;
+     %let geo = Zip;
      %let geosuf = _zip;
      %let ncdb00in = ncdb.Ncdb_sum_zip;
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_zip;
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_zip;
+	 %let prevacsin = Acs.Acs_&prevacsyr._dc_sum_tr_zip;
   %end;
-  %else %if %upcase( &source_geo ) = CL17 %then %do;
-     %let geo = cluster2017;
+ %else %if %upcase( &source_geo ) = CL17 %then %do;
+     %let geo = Cluster2017;
      %let geosuf = _cl17;
      %let ncdb00in = ncdb.Ncdb_sum_cl17;
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_cl17;
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_cl17;
+	 %let prevacsin = Acs.Acs_&prevacsyr._dc_sum_tr_cl17;
   %end;
-
-  %let lgeo = %lowcase( &geo. );
 
 
 
@@ -128,18 +135,21 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 	timeframe = "&ncdbyr" ;
 %end;
 
-%else %do;
-	%let ncdbyr = &acsyr.;
+%else %if &ds. = prevacs %then %do;
+	%let ncdbyr = &prevacsyr.;
 
 	length timeframe $ 15;
 	set &acsin.;
 
 	&geo._nf = &geo.;
 
-	timeframe = "&y_lbl." ;
+	timeframe = "&py_lbl." ;
 
-	start_date = '01jan12'd;
-	end_date = '31dec16'd;
+	%let sy = %substr(&prevacsyr.,3,2);
+	%let ey = %substr(&prevacsyr.,6,2);
+
+	start_date = "01jan&sy."d;
+	end_date = "31dec&ey."d;
 	format start_date end_date date9. ;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
@@ -153,7 +163,35 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 				  "51685","54037");
 	%end;
 
+%end;
 
+%else %do;
+	%let ncdbyr = &acsyr.;
+
+	length timeframe $ 15;
+	set &acsin.;
+
+	&geo._nf = &geo.;
+
+	timeframe = "&y_lbl." ;
+
+	%let sy = %substr(&acsyr.,3,2);
+	%let ey = %substr(&acsyr.,6,2);
+
+	start_date = "01jan&sy."d;
+	end_date = "31dec&ey."d;
+	format start_date end_date date9. ;
+
+	%if %upcase( &source_geo ) = GEO2010 %then %do;
+	ucounty=substr(geo2010,1,5);
+	%define_dcmetro (countyvar = ucounty);
+	%end;
+
+	%else %if %upcase( &source_geo ) = COUNTY %then %do;
+	if county in ("11001","24009","24017","24021","24031","24033","51013","51043","51047","51059","51061",
+				  "51107","51153","51157","51177","51179","51187","51510","51600","51610","51630","51683",
+				  "51685","54037");
+	%end;
 
 %end;
 
@@ -182,39 +220,39 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 			PctNocomputer_&ncdbyr. = PctNocomputer
 			Pctcellularonly_&ncdbyr. = Pctcellularonly
 			Pctnointernet_&ncdbyr. = Pctnointernet
-;
+			;
 
 
 %if &ds. = acs %then %do;
 
-	%Moe_prop_a( var=PctHshldPhone_m_&acsyr., mult=100, num=NumHshldPhone_&acsyr., den=NumOccupiedHsgUnits_&acsyr., 
-                       num_moe=mNumHshldPhone_&acsyr., den_moe=mNumOccupiedHsgUnits_&acsyr. );
+	%Moe_prop_a( var=PctHshldPhone_m_&ncdbyr., mult=100, num=NumHshldPhone_&ncdbyr., den=NumOccupiedHsgUnits_&ncdbyr., 
+                       num_moe=mNumHshldPhone_&ncdbyr., den_moe=mNumOccupiedHsgUnits_&ncdbyr. );
     
-    %Moe_prop_a( var=PctHshldCar_m_&acsyr., mult=100, num=NumHshldCar_&acsyr., den=NumOccupiedHsgUnits_&acsyr., 
-                       num_moe=mNumHshldCar_&acsyr., den_moe=mNumOccupiedHsgUnits_&acsyr. );
+    %Moe_prop_a( var=PctHshldCar_m_&ncdbyr., mult=100, num=NumHshldCar_&ncdbyr., den=NumOccupiedHsgUnits_&ncdbyr., 
+                       num_moe=mNumHshldCar_&ncdbyr., den_moe=mNumOccupiedHsgUnits_&ncdbyr. );
 
-	%Moe_prop_a( var=PctBroadband_m_&acsyr., num=Numbroadband_&acsyr., den=Numhhdefined_&acsyr., 
-                       num_moe=mNumbroadband_&acsyr., den_moe=mNumhhdefined_&acsyr. );
+	%Moe_prop_a( var=PctBroadband_m_&ncdbyr., mult=100, num=Numbroadband_&ncdbyr., den=Numhhdefined_&ncdbyr., 
+                       num_moe=mNumbroadband_&ncdbyr., den_moe=mNumhhdefined_&ncdbyr. );
 
-	%Moe_prop_a( var=PctNocomputer_m_&acsyr., num=NumNocomputer_&acsyr., den=numhshlds_&acsyr., 
-                       num_moe=mNumNocomputer_&acsyr., den_moe=mnumhshlds_&acsyr. );
+	%Moe_prop_a( var=PctNocomputer_m_&ncdbyr., mult=100, num=NumNocomputer_&ncdbyr., den=numhshlds_&ncdbyr., 
+                       num_moe=mNumNocomputer_&ncdbyr., den_moe=mnumhshlds_&ncdbyr. );
 
-	%Moe_prop_a( var=Pctcellularonly_m_&acsyr., num=Numcellularonly_&acsyr., den=numhshlds_&acsyr., 
-                       num_moe=mNumcellularonly_&acsyr., den_moe=mnumhshlds_&acsyr. );
+	%Moe_prop_a( var=Pctcellularonly_m_&ncdbyr., mult=100, num=Numcellularonly_&ncdbyr., den=numhshlds_&ncdbyr., 
+                       num_moe=mNumcellularonly_&ncdbyr., den_moe=mnumhshlds_&ncdbyr. );
 
-	%Moe_prop_a( var=Pctnointernet_m_&acsyr., num=Numnointernet_&acsyr., den=numhshlds_&acsyr., 
-                       num_moe=mNumnointernet_&acsyr., den_moe=mnumhshlds_&acsyr. );
+	%Moe_prop_a( var=Pctnointernet_m_&ncdbyr., mult=100, num=Numnointernet_&ncdbyr., den=numhshlds_&ncdbyr., 
+                       num_moe=mNumnointernet_&ncdbyr., den_moe=mnumhshlds_&ncdbyr. );
 
 
-	keep PctHshldPhone_m_&acsyr. PctHshldCar_m_&acsyr. PctBroadband_m_&acsyr.
-		 PctNocomputer_m_&acsyr. Pctcellularonly_m_&acsyr. Pctnointernet_m_&acsyr.;
+	keep PctHshldPhone_m_&ncdbyr. PctHshldCar_m_&ncdbyr. PctBroadband_m_&ncdbyr.
+		 Pctnocomputer_m_&ncdbyr. Pctcellularonly_m_&ncdbyr. Pctnointernet_m_&ncdbyr.;
 
-	rename 	PctHshldPhone_m_&acsyr. = PctHshldPhone_m
-			PctHshldCar_m_&acsyr. = PctHshldCar_m
-			PctBroadband_m_&acsyr. = PctBroadband_m
-			PctNocomputer_m_&acsyr. = PctNocomputer_m
-			Pctcellularonly_m_&acsyr. = Pctcellularonly_m
-			Pctnointernet_m_&acsyr. = Pctnointernet_m
+	rename 	PctHshldPhone_m_&ncdbyr. = PctHshldPhone_m
+			PctHshldCar_m_&ncdbyr. = PctHshldCar_m
+			PctBroadband_m_&ncdbyr. = PctBroadband_m
+			PctNocomputer_m_&ncdbyr. = Pctnocomputer_m
+			Pctcellularonly_m_&ncdbyr. = Pctcellularonly_m
+			Pctnointernet_m_&ncdbyr. = Pctnointernet_m
 			;
 
 %end;
@@ -227,9 +265,22 @@ run;
 
 %ncdbloop (ncdb,2000);
 %ncdbloop (acs,acs);
+%ncdbloop (prevacs,prevacs);
 
 data alldata_&topic.&geosuf.;
-	set Ncdb_acs_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. ;
+	set Ncdb_acs_&topic.&geosuf. Ncdb_prevacs_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. ;
+
+	/* Flip Internet vars so all move in the same direction */
+	if PctNocomputer ^=. then do;
+	Pctcomputer = 100 - PctNocomputer;
+	end;
+	if Pctnointernet ^=.  then do;
+	Pctinternet = 100 - Pctnointernet;
+	end;
+
+	Pctcomputer_m = PctNocomputer_m;
+	Pctinternet_m = Pctnointernet_m;
+
 run;
 
 %suppress_lowpop (in_check = alldata_&topic.&geosuf.,
@@ -237,7 +288,11 @@ run;
 
 
 data &topic.&geosuf.;
-	set checked_&topic.&geosuf.;
+	set checked_&topic.&geosuf. 
+
+		/* Lowercase the geo variable names */
+		(rename=(&geo=%sysfunc(lowcase(&geo.))
+		 &geo._nf=%sysfunc(lowcase(&geo._nf)))) ;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
 	ucounty=substr(geo2010,1,5);
@@ -248,30 +303,33 @@ data &topic.&geosuf.;
 	indc = 1;
 	%end;
 
+
+
 	label 	PctHshldPhone = "% HHs with a phone"
 			PctHshldCar = "% HHs with a car"
 			PctBroadband = "% HHs with broadband internet subscription"
+			Pctcomputer = "% HHs with computing devices"
+			Pctcellularonly = "% HHs with cell data plan but no other internet"
+			Pctinternet = "% HHs with internet access"
 			PctHshldPhone_m = "% HHs with a phone MOE"
 			PctHshldCar_m = "% HHs with a car MOE"
 			PctBroadband_m = "% HHs with broadband internet subscription MOE"
-			PctNocomputer = "% HHs with no computing devices"
-			PctNocomputer_m = "% HHs with no computing devices MOE"
-			Pctcellularonly = "% HHs with cell data plan and no other internet"
-			Pctcellularonly_m = "% HHs with cell data plan and no other internet MOE"
-			Pctnointernet = "% HHs with no internet access"
-			Pctnointernet_m = "% HHs with no internet access MOE"
-
+			Pctcomputer_m = "% HHs with computing devices MOE"
+			Pctcellularonly_m = "% HHs with cell data plan but no other internet MOE"
+			Pctinternet_m = "% HHs with internet access MOE"
 		  ;
 
-	format PctHshldPhone PctHshldCar PctHshldPhone_m PctHshldCar_m PctBroadband PctBroadband_m $profnum.;
+	format PctHshldPhone PctHshldCar PctBroadband Pctcomputer Pctcellularonly Pctinternet 
+			PctHshldPhone_m PctHshldCar_m PctBroadband_m Pctcomputer_m Pctcellularonly_m Pctinternet_m 
+			$profnum.;
 run;
 
-/* Lowercase the geo variable names */
+/* Lowercase the geo variable names 
 proc datasets lib=work nolist;
 	modify &topic.&geosuf.;
 	rename &geo. = &lgeo.;
 	rename &geo._nf = &lgeo._nf;
-run;
+run;*/
 
 
 /* Create metadata for the dataset */
