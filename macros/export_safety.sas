@@ -10,9 +10,6 @@
 
 **************************************************************************/
 
-
-
-
 %macro export_safety (source_geo);
 
 %let topic = safety ;
@@ -102,10 +99,6 @@ run;
 %dc_county (crimes_sum);
 
 
-/*data dcdata_&topic.&geosuf.;
-	set crimes_sum&geosuf._long_allyr ;
-run;*/
-
 %suppress_lowpop (in_check = crimes_sum&geosuf._long_allyr,
 				  out_check = dcdata_&topic.&geosuf.);
 
@@ -132,16 +125,6 @@ data &topic.&geosuf.;
 
 	format Crimes_pt1_violent_per1000 Crimes_pt1_property_per1000 $profnum.;
 run;
-
-/* Lowercase the geo variable names 
-proc datasets lib=work nolist;
-	modify &topic.&geosuf.;
-	%if %upcase( &source_geo ) ^= CL17 %then %do;
-		rename &geo. = &lgeo.;
-	%end;
-	rename &geo._nf = &lgeo._nf;
-run;*/
-
 
 
 /* Create metadata for the dataset */

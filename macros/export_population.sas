@@ -483,13 +483,6 @@ data &topic.&geosuf.;
 		   PctAPINonHispBridge_m PctFamiliesOwnChildFH_m $profnum.;
 run;
 
-/* Lowercase the geo variable names 
-proc datasets lib=work nolist;
-	modify &topic.&geosuf.;
-	rename &geo. = &lgeo.;
-	rename &geo._nf = &lgeo._nf;
-run;*/
-
 
 /* Create metadata for the dataset */
 proc contents data = &topic.&geosuf. out = &topic.&geosuf._metadata_order noprint;

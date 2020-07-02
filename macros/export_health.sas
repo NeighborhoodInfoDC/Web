@@ -99,11 +99,6 @@ run;
 %mend dc_county;
 %dc_county (Births_sum);
 
-
-/*data dcdata_&topic.&geosuf.;
-	set births_sum&geosuf._long_allyr ;
-run;*/
-
 %suppress_lowpop (in_check = births_sum&geosuf._long_allyr,
 				  out_check = dcdata_&topic.&geosuf.);
 
@@ -130,15 +125,6 @@ data &topic.&geosuf.;
 
 	format Pct_births_low_wt Pct_births_teen $profnum.;
 run;
-
-/* Lowercase the geo variable names 
-proc datasets lib=work nolist;
-	modify &topic.&geosuf.;
-	%if %upcase( &source_geo ) ^= CL17 %then %do;
-		rename &geo. = &lgeo.;
-	%end;
-	rename &geo._nf = &lgeo._nf;
-run;*/
 
 
 /* Create metadata for the dataset */
