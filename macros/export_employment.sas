@@ -20,6 +20,7 @@
      %let ncdb00in = ncdb.Ncdb_sum_was15_tr10;
 	 %let ncdb10in = ncdb.Ncdb_2010_was15;
 	 %let acsin = acs.acs_&acsyr._dc_sum_tr_tr10 acs.acs_&acsyr._md_sum_tr_tr10 acs.acs_&acsyr._va_sum_tr_tr10 acs.acs_&acsyr._wv_sum_tr_tr10;
+	 %let prevacsin = acs.acs_&prevacsyr._dc_sum_tr_tr10 acs.acs_&prevacsyr._md_sum_tr_tr10 acs.acs_&prevacsyr._va_sum_tr_tr10 acs.acs_&prevacsyr._wv_sum_tr_tr10;
   %end;
 %else %if %upcase( &source_geo ) = COUNTY %then %do;
   	 %ncdb_cnty;
@@ -28,6 +29,7 @@
      %let ncdb00in = work.Ncdb_sum_was15_cnty;
 	 %let ncdb10in = work.Ncdb_2010_sum_was15_cnty;
 	 %let acsin = acs.acs_&acsyr._dc_sum_regcnt_regcnt acs.acs_&acsyr._md_sum_regcnt_regcnt acs.acs_&acsyr._va_sum_regcnt_regcnt acs.acs_&acsyr._wv_sum_regcnt_regcnt;
+	 %let prevacsin = acs.acs_&prevacsyr._dc_sum_regcnt_regcnt acs.acs_&prevacsyr._md_sum_regcnt_regcnt acs.acs_&prevacsyr._va_sum_regcnt_regcnt acs.acs_&prevacsyr._wv_sum_regcnt_regcnt;
   %end;
 %else %if %upcase( &source_geo ) = CITY %then %do;
      %let geo = City;
@@ -35,13 +37,15 @@
      %let ncdb00in = ncdb.Ncdb_sum_city;
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_city;
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_city;
+	 %let prevacsin = Acs.Acs_&prevacsyr._dc_sum_tr_city;
   %end;
 %else %if %upcase( &source_geo ) = WD12 %then %do;
      %let geo = Ward2012;
      %let geosuf = _wd12;
      %let ncdb00in = ncdb.Ncdb_sum_wd12;
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_wd12;
-	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_wd12;
+	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_wd12 ;
+	 %let prevacsin = Acs.Acs_&prevacsyr._dc_sum_tr_wd12;
   %end;
 %else %if %upcase( &source_geo ) = ANC12 %then %do;
      %let geo = Anc2012;
@@ -49,6 +53,7 @@
      %let ncdb00in = ncdb.Ncdb_sum_anc12;
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_anc12;
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_anc12;
+	 %let prevacsin = Acs.Acs_&prevacsyr._dc_sum_tr_anc12;
   %end;
  %else %if %upcase( &source_geo ) = CLTR00 %then %do;
      %let geo = Cluster_tr2000;
@@ -56,6 +61,7 @@
      %let ncdb00in = ncdb.Ncdb_sum_cltr00;
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_cltr00;
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_cltr00;
+	 %let prevacsin = Acs.Acs_&prevacsyr._dc_sum_tr_cltr00;
   %end;
  %else %if %upcase( &source_geo ) = PSA12 %then %do;
      %let geo = Psa2012;
@@ -63,6 +69,7 @@
      %let ncdb00in = ncdb.Ncdb_sum_psa12;
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_psa12;
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_psa12;
+	 %let prevacsin = Acs.Acs_&prevacsyr._dc_sum_tr_psa12;
   %end;
  %else %if %upcase( &source_geo ) = ZIP %then %do;
      %let geo = Zip;
@@ -70,6 +77,7 @@
      %let ncdb00in = ncdb.Ncdb_sum_zip;
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_zip;
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_zip;
+	 %let prevacsin = Acs.Acs_&prevacsyr._dc_sum_tr_zip;
   %end;
  %else %if %upcase( &source_geo ) = CL17 %then %do;
      %let geo = Cluster2017;
@@ -77,13 +85,11 @@
      %let ncdb00in = ncdb.Ncdb_sum_cl17;
 	 %let ncdb10in = ncdb.Ncdb_sum_2010_cl17;
 	 %let acsin = Acs.Acs_&acsyr._dc_sum_tr_cl17;
+	 %let prevacsin = Acs.Acs_&prevacsyr._dc_sum_tr_cl17;
   %end;
-
-  %let lgeo = %lowcase( &geo. );
 
 
 %macro ncdbloop (ds,ncdbyr);
-
 
 /* Need to rename variables in NDCB 2010 */
 data rename_ncdb10;
@@ -145,18 +151,22 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 	timeframe = "&ncdbyr" ;
 %end;
 
-%else %do;
-	%let ncdbyr = &acsyr.;
+%else %if &ds. = prevacs %then %do;
+	%let ncdbyr = &prevacsyr.;
 
 	length timeframe $ 15;
-	set &acsin.;
+	set &prevacsin.;
 
 	&geo._nf = &geo.;
 
-	timeframe = "&y_lbl." ;
+	timeframe = "&py_lbl." ;
 
-	start_date = '01jan12'd;
-	end_date = '31dec16'd;
+	%let sy = %substr(&prevacsyr.,3,2);
+	%let ey = %substr(&prevacsyr.,6,2);
+
+	start_date = "01jan&sy."d;
+	end_date = "31dec&ey."d;
+
 	format start_date end_date date9. ;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
@@ -169,8 +179,37 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 				  "51107","51153","51157","51177","51179","51187","51510","51600","51610","51630","51683",
 				  "51685","54037");
 	%end;
-
 %end;
+
+%else %do;
+	%let ncdbyr = &acsyr.;
+
+	length timeframe $ 15;
+	set &acsin.;
+
+	&geo._nf = &geo.;
+
+	timeframe = "&y_lbl." ;
+
+	%let sy = %substr(&acsyr.,3,2);
+	%let ey = %substr(&acsyr.,6,2);
+
+	start_date = "01jan&sy."d;
+	end_date = "31dec&ey."d;
+	format start_date end_date date9. ;
+
+	%if %upcase( &source_geo ) = GEO2010 %then %do;
+	ucounty=substr(geo2010,1,5);
+	%define_dcmetro (countyvar = ucounty);
+	%end;
+
+	%else %if %upcase( &source_geo ) = COUNTY %then %do;
+	if county in ("11001","24009","24017","24021","24031","24033","51013","51043","51047","51059","51061",
+				  "51107","51153","51157","51177","51179","51187","51510","51600","51610","51630","51683",
+				  "51685","54037");
+	%end;
+%end;
+
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
 	/* Keep tracts in the MSA */
@@ -187,22 +226,21 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 
 	rename 	PctUnemployed_&ncdbyr. = PctUnemployed
 			Pct16andOverEmployed_&ncdbyr. = Pct16andOverEmployed
-;
+	;
 
+%if &ds. = acs or &ds. = prevacs %then %do;
 
-%if &ds. = acs %then %do;
-
-	%Moe_prop_a( var=PctUnemployed_m_&acsyr., mult=100, num=PopUnemployed_&acsyr., den=PopInCivLaborForce_&acsyr., 
-                       num_moe=mPopUnemployed_&acsyr., den_moe=mPopInCivLaborForce_&acsyr. );
+	%Moe_prop_a( var=PctUnemployed_m_&ncdbyr., mult=100, num=PopUnemployed_&ncdbyr., den=PopInCivLaborForce_&ncdbyr., 
+                       num_moe=mPopUnemployed_&ncdbyr., den_moe=mPopInCivLaborForce_&ncdbyr. );
     
-    %Moe_prop_a( var=Pct16andOverEmployed_m_&acsyr., mult=100, num=Pop16andOverEmployed_&acsyr., den=Pop16andOverYears_&acsyr., 
-                       num_moe=mPop16andOverEmployed_&acsyr., den_moe=mPop16andOverYears_&acsyr. );
+    %Moe_prop_a( var=Pct16andOverEmployed_m_&ncdbyr., mult=100, num=Pop16andOverEmployed_&ncdbyr., den=Pop16andOverYears_&ncdbyr., 
+                       num_moe=mPop16andOverEmployed_&ncdbyr., den_moe=mPop16andOverYears_&ncdbyr. );
 
 
-	keep PctUnemployed_m_&acsyr. Pct16andOverEmployed_m_&acsyr. ;
+	keep PctUnemployed_m_&ncdbyr. Pct16andOverEmployed_m_&ncdbyr. ;
 
-	rename 	PctUnemployed_m_&acsyr. = PctUnemployed_m
-			Pct16andOverEmployed_m_&acsyr. = Pct16andOverEmployed_m ;
+	rename 	PctUnemployed_m_&ncdbyr. = PctUnemployed_m
+			Pct16andOverEmployed_m_&ncdbyr. = Pct16andOverEmployed_m ;
 
 %end;
 
@@ -215,10 +253,11 @@ run;
 %ncdbloop (ncdb,1990);
 %ncdbloop (ncdb,2000);
 %ncdbloop (acs,acs);
+%ncdbloop (prevacs,prevacs);
 
 
 data alldata_&topic.&geosuf.;
-	set Ncdb_acs_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. Ncdb_1990_&topic.&geosuf.;
+	set Ncdb_acs_&topic.&geosuf. Ncdb_prevacs_&topic.&geosuf. Ncdb_2000_&topic.&geosuf. Ncdb_1990_&topic.&geosuf.;
 run;
 
 %suppress_lowpop (in_check = alldata_&topic.&geosuf.,
@@ -226,7 +265,11 @@ run;
 
 
 data &topic.&geosuf.;
-	set checked_&topic.&geosuf.;
+	set checked_&topic.&geosuf. 
+
+		/* Lowercase the geo variable names */
+		(rename=(&geo=%sysfunc(lowcase(&geo.))
+		 &geo._nf=%sysfunc(lowcase(&geo._nf)))) ;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
 	ucounty=substr(geo2010,1,5);
@@ -246,12 +289,12 @@ data &topic.&geosuf.;
 	format PctUnemployed Pct16andOverEmployed PctUnemployed_m Pct16andOverEmployed_m $profnum.;
 run;
 
-/* Lowercase the geo variable names */
+/* Lowercase the geo variable names 
 proc datasets lib=work nolist;
 	modify &topic.&geosuf.;
 	rename &geo. = &lgeo.;
 	rename &geo._nf = &lgeo._nf;
-run;
+run;*/
 
 
 /* Create metadata for the dataset */
