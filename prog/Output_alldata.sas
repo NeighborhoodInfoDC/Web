@@ -20,15 +20,9 @@
 
 /***** Update the let statements for the data you want to create CSV files for *****/
 
-%let acsyr = 2014_18; /* Year range for ACS data */
-%let y_lbl = %sysfunc( translate( &acsyr., '-', '_' ) );
-
-%let prevacsyr = 2011_15; /* Previous year range for ACS data */
-%let py_lbl = %sysfunc( translate( &prevacsyr., '-', '_' ) );
-
-
-** Last year of ACS data for inflation adjustment **;
-%let acs_infl_yr = 2018;
+/* Year range for current and previous ACS data */
+%let acsyr = 2014_18; 
+%let prevacsyr = 2011_15;
 
 ** Inflation base year **;
 %let inc_dollar_yr = 2018;

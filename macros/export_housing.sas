@@ -14,6 +14,14 @@
 
 %let topic = housing ;
 
+/* Labels for ACS years */
+%let y_lbl = %sysfunc( translate( &acsyr., '-', '_' ) );
+%let py_lbl = %sysfunc( translate( &prevacsyr., '-', '_' ) );
+
+** Last year of ACS data for inflation adjustment **;
+%let last_acs = %substr(&acsyr.,6,2);
+%let acs_infl_yr = 20&last_acs. ;
+
 %if %upcase( &source_geo ) = GEO2010 %then %do;
      %let geo = Geo2010;
      %let geosuf = _tr10;
