@@ -107,7 +107,7 @@
 
 
 /* Export health data */
-%include "&_dcdata_r_path.\Vital\Prog\Births_forweb.sas";
+%include "&_dcdata_default_path.\Vital\Prog\Births_forweb.sas";
 %export_health (geo2010);
 %export_health (county);
 %export_health (city);

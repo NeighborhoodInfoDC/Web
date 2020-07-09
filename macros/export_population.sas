@@ -234,13 +234,12 @@ if county in ("11001","24009","24017","24021","24031","24033","51013","51043","5
 %Pct_calc( var=PctWhiteNonHispBridge, label=% white non-Hispanic, num=PopWhiteNonHispBridge, den=PopWithRace, years=&ncdbyr. );
 %Pct_calc( var=PctHisp, label=% Hispanic, num=PopHisp, den=PopWithRace, years=&ncdbyr. );
 %Pct_calc( var=PctAsianPINonHispBridge, label=% Asian/P.I. non-Hispanic, num=PopAsianPINonHispBridge, den=PopWithRace, years=&ncdbyr. );
-%Pct_calc( var=PctFamiliesOwnChildrenFH, label=% female-headed families with children, num=NumFamiliesOwnChildrenFH, den=NumFamiliesOwnChildren, years=&ncdbyr. );
-	
 
-%if &ncdbyr. = 2010 %then %do;
+
+%if &ncdbyr. = 1990 or &ncdbyr. = 2000 or &ncdbyr. = 2010 %then %do;
 keep &geo._nf &geo. start_date end_date timeframe
 	 TotPop_&ncdbyr. PctPopUnder18Years_&ncdbyr. PctPop65andOverYears_&ncdbyr. 
-	 PctBlackNonHispBridge_&ncdbyr. PctWhiteNonHispBridge_&ncdbyr. PctHisp_&ncdbyr. PctAsianPINonHispBridge_&ncdbyr. ;
+	 PctBlackNonHispBridge_&ncdbyr. PctWhiteNonHispBridge_&ncdbyr. PctHisp_&ncdbyr. PctAsianPINonHispBridge_&ncdbyr.;
 %end;
 
 %else %do;
@@ -253,16 +252,16 @@ keep &geo._nf &geo. start_date end_date timeframe
 rename 	TotPop_&ncdbyr. = TotPop;
 rename	PctPopUnder18Years_&ncdbyr.  = PctPopUnder18Years;
 rename	PctPop65andOverYears_&ncdbyr. = PctPop65andOverYears;
-rename	PctForeignBorn_&ncdbyr. = PctForeignBorn;
 rename	PctBlackNonHispBridge_&ncdbyr. = PctBlackNonHispBridge;
 rename	PctWhiteNonHispBridge_&ncdbyr. = PctWhiteNonHispBridge;
 rename	PctHisp_&ncdbyr. = PctHisp;
 rename	PctAsianPINonHispBridge_&ncdbyr. = PctAsianPINonHispBridge;
-rename	PctFamiliesOwnChildrenFH_&ncdbyr. =  PctFamiliesOwnChildrenFH;
-
 
 
 %if &ds. = acs or &ds. = prevacs %then %do;
+
+	
+	%Pct_calc( var=PctFamiliesOwnChildrenFH, label=% female-headed families with children, num=NumFamiliesOwnChildrenFH, den=NumFamiliesOwnChildren, years=&ncdbyr. );
 
 	%Moe_prop_a( var=PctPopUnder18Years_m_&ncdbyr., mult=100, num=PopUnder18Years_&ncdbyr., den=TotPop_&ncdbyr., 
 	                       num_moe=mPopUnder18Years_&ncdbyr., den_moe=mTotPop_&ncdbyr. );
@@ -293,7 +292,10 @@ rename	PctFamiliesOwnChildrenFH_&ncdbyr. =  PctFamiliesOwnChildrenFH;
 		 PctWhiteNonHispBridge_m_&ncdbyr. PctHisp_m_&ncdbyr. PctAPINonHispBridge_m_&ncdbyr. PctFamiliesOwnChildFH_m_&ncdbyr.
 		 mTotPop_&ncdbyr.;
 
-	rename 	mTotPop_&ncdbyr. = TotPop_m
+	rename  PctForeignBorn_&ncdbyr. = PctForeignBorn
+			PctFamiliesOwnChildrenFH_&ncdbyr. =  PctFamiliesOwnChildrenFH
+
+			mTotPop_&ncdbyr. = TotPop_m
 			PctPopUnder18Years_m_&ncdbyr. = PctPopUnder18Years_m
 			PctPop65andOverYears_m_&ncdbyr. = PctPop65andOverYears_m
 			PctForeignBorn_m_&ncdbyr. = PctForeignBorn_m
@@ -319,7 +321,7 @@ run;
 
 
 data acs_all&geosuf.;
-	set &acsin. &prevacsin.; 
+	set &acsin.; 
 	%if %upcase( &source_geo ) = COUNTY %then %do;
 	if county in ("11001","24009","24017","24021","24031","24033","51013","51043","51047","51059","51061",
 				  "51107","51153","51157","51177","51179","51187","51510","51600","51610","51630","51683",
@@ -344,7 +346,6 @@ data ch_&topic.&geosuf.;
     if Pop65andOverYears_2000 > 0 then PctChgPop65andOverY_2000_&acsyr. = %pctchg( Pop65andOverYears_2000, Pop65andOverYears_&acsyr. );
 
 run;
-
 
 data ch_&topic.&geosuf._1990_2000;
 	length timeframe $ 15;
