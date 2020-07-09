@@ -55,9 +55,9 @@
 
 
 /* Export housing data */
-%include "&_dcdata_default_path.\realprop\prog\sales_forweb.sas";
-%include "&_dcdata_default_path.\hmda\prog\hmda_forweb.sas";
-%include "&_dcdata_default_path.\rod\prog\foreclosure_forweb.sas";
+%include "&_dcdata_r_path.\realprop\prog\sales_forweb.sas";
+%include "&_dcdata_r_path.\hmda\prog\hmda_forweb.sas";
+%include "&_dcdata_r_path.\rod\prog\foreclosure_forweb.sas";
 %include "&_dcdata_default_path.\Web\macros\permits_forweb.sas";
 
 %export_housing (geo2010);
@@ -82,8 +82,8 @@
 
 
 /* Export income data */
-%include "&_dcdata_default_path.\tanf\prog\TANF_forweb.sas";
-%include "&_dcdata_default_path.\tanf\prog\FS_forweb.sas";
+%include "&_dcdata_r_path.\tanf\prog\TANF_forweb.sas";
+%include "&_dcdata_r_path.\tanf\prog\FS_forweb.sas";
 %export_income (geo2010);
 %export_income (county);
 %export_income (city);
@@ -95,7 +95,7 @@
 
 
 /* Export education data */
-%include "&_dcdata_default_path.\Schools\Prog\Schools_forweb.sas";
+%include "&_dcdata_r_path.\Schools\Prog\Schools_forweb.sas";
 %export_education (geo2010);
 %export_education (county);
 %export_education (city);
@@ -107,7 +107,7 @@
 
 
 /* Export health data */
-%include "&_dcdata_default_path.\Vital\Prog\Births_forweb.sas";
+%include "&_dcdata_r_path.\Vital\Prog\Births_forweb.sas";
 %export_health (geo2010);
 %export_health (county);
 %export_health (city);
@@ -119,7 +119,7 @@
 
 
 /* Export safety data */
-%include "&_dcdata_default_path.\Police\Prog\Crimes_forweb.sas";
+%include "&_dcdata_r_path.\Police\Prog\Crimes_forweb.sas";
 %export_safety (geo2010);
 %export_safety (city);
 %export_safety (county);
