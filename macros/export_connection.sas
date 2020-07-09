@@ -329,7 +329,7 @@ data &topic.&geosuf.;
 
 	format PctHshldPhone PctHshldCar PctBroadband Pctcomputer Pctcellularonly Pctinternet 
 			PctHshldPhone_m PctHshldCar_m PctBroadband_m Pctcomputer_m Pctcellularonly_m Pctinternet_m 
-			$profnum.;
+			profnum.;
 run;
 
 

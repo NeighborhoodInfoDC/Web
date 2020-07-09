@@ -294,7 +294,7 @@ data &topic.&geosuf.;
 			school_present = "Number of schools"
 		  ;
 
-	format Pct25andOverWoutHS Pct25andOverWoutHS_m aud aud_charter aud_dcps charter_present dcps_present school_present $profnum.;
+	format Pct25andOverWoutHS Pct25andOverWoutHS_m aud aud_charter aud_dcps charter_present dcps_present school_present profnum.;
 run;
 
 

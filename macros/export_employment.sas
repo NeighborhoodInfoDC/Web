@@ -294,7 +294,7 @@ data &topic.&geosuf.;
 		  Pct16andOverEmployed_m = "% pop. 16+ yrs. employed MOE"
 		  ;
 
-	format PctUnemployed Pct16andOverEmployed PctUnemployed_m Pct16andOverEmployed_m $profnum.;
+	format PctUnemployed Pct16andOverEmployed PctUnemployed_m Pct16andOverEmployed_m profnum.;
 run;
 
 

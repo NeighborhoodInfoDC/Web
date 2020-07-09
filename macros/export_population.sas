@@ -488,7 +488,7 @@ data &topic.&geosuf.;
 	format TotPop PctPopUnder18Years PctPop65andOverYears PctForeignBorn PctBlackNonHispBridge PctWhiteNonHispBridge PctHisp
 		   PctAsianPINonHispBridge PctFamiliesOwnChildrenFH PctChgTotPop PctChgPopUnder18Years PctChgPop65andOverYear Totpop_m
 		   PctPopUnder18Years_m PctPop65andOverYears_m PctForeignBorn_m PctBlackNonHispBridge_m PctWhiteNonHispBridge_m PctHisp_m
-		   PctAPINonHispBridge_m PctFamiliesOwnChildFH_m $profnum.;
+		   PctAPINonHispBridge_m PctFamiliesOwnChildFH_m profnum.;
 run;
 
 

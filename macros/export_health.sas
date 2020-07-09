@@ -131,7 +131,7 @@ data &topic.&geosuf.;
 			Pct_births_teen = "% births to teen mothers"
 		  ;
 
-	format Pct_births_low_wt Pct_births_teen $profnum.;
+	format Pct_births_low_wt Pct_births_teen profnum.;
 run;
 
 

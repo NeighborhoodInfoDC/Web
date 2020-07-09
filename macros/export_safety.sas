@@ -131,7 +131,7 @@ data &topic.&geosuf.;
 			Crimes_pt1_property_per1000 = "Property Crimes (per 1,000 pop.)"
 		  ;
 
-	format Crimes_pt1_violent_per1000 Crimes_pt1_property_per1000 $profnum.;
+	format Crimes_pt1_violent_per1000 Crimes_pt1_property_per1000 profnum.;
 run;
 
 

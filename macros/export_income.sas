@@ -434,7 +434,7 @@ data &topic.&geosuf.;
 
 	format PctPoorPersons PctPoorChildren PctPoorElderly AvgFamilyIncAdj 
 		   PctPoorPersons_m PctPoorChildren_m PctPoorElderly_m AvgFamilyIncAdj_m PctChgAvgFamilyIncAdj 
-	       Fs_client Tanf_client $profnum.;
+	       Fs_client Tanf_client profnum.;
 run;
 
 /* Create metadata for the dataset */
