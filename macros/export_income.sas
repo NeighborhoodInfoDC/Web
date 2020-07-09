@@ -226,8 +226,7 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 	%dollar_convert( AvgFamilyIncome_&ncdbyr., AvgFamilyIncAdj_&ncdbyr., &ifromyr., &inc_dollar_yr. );
 
 	keep &geo._nf &geo. start_date end_date timeframe
-		 PctPoorPersons_&ncdbyr. PctPoorChildren_&ncdbyr. PctPoorElderly_&ncdbyr. AvgFamilyIncAdj_&ncdbyr. 
-	     PctPoorPersons_m_&ncdbyr. PctPoorChildren_m_&ncdbyr. PctPoorElderly_m_&ncdbyr. AvgFamilyIncAdj_m_&ncdbyr. ;
+		 PctPoorPersons_&ncdbyr. PctPoorChildren_&ncdbyr. PctPoorElderly_&ncdbyr. AvgFamilyIncAdj_&ncdbyr. ;
 
 	rename PctPoorPersons_&ncdbyr. = PctPoorPersons
 	 	   PctPoorChildren_&ncdbyr. = PctPoorChildren
@@ -248,7 +247,7 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 
 	%dollar_convert( AvgFamilyIncome_m_&ncdbyr., AvgFamilyIncAdj_m_&ncdbyr., &ifromyr., &inc_dollar_yr );
 
-	keep PctPoorPersons_m_&ncdbyr. PctPoorChildren_m_&ncdbyr. PctPoorElderly_m_&ncdbyr. AvgFamilyIncAdj_m_&ncdbyr. ;
+	keep PctPoorPersons_m_&ncdbyr. PctPoorChildren_m_&ncdbyr. PctPoorElderly_m_&ncdbyr. AvgFamilyIncAdj_m_&ncdbyr.;
 
 	rename PctPoorPersons_m_&ncdbyr. = PctPoorPersons_m
 		   PctPoorChildren_m_&ncdbyr. = PctPoorChildren_m
@@ -256,7 +255,7 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 		   AvgFamilyIncAdj_m_&ncdbyr. = AvgFamilyIncAdj_m
 		   ;
 
-%end;
+	%end;
 
 
 run;
