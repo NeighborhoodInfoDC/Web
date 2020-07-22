@@ -121,6 +121,7 @@ run;
 %dc_county (sales_sum);
 %dc_county (hmda_sum);
 %dc_county (fcl);
+%dc_county (permits_sum);
 
 
 
