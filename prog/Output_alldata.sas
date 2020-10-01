@@ -10,7 +10,7 @@
 
 **************************************************************************/
 
-%include "L:\SAS\Inc\StdLocal.sas"; 
+%include "\\sas1\dcdata\SAS\Inc\StdLocal.sas"; 
 
 ** Define libraries **;
 %DCData_lib( ACS )
@@ -22,7 +22,7 @@
 
 /* Year range for current and previous ACS data */
 %let acsyr = 2014_18; 
-%let prevacsyr = 2011_15;
+%let prevacsyr = 2010_14;
 
 ** Inflation base year **;
 %let inc_dollar_yr = 2018;
