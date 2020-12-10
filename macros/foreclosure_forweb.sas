@@ -53,8 +53,13 @@ data fcl_&geo._long_allyr;
 	label start_date = "Start Date"
 		  end_date = "End Date"
 		  timeframe = "Year of Data";
-	%if %upcase(&geo.) = GEO2000 or %upcase(&geo.) = GEO2010 %then %do;
-	stc = substr(&geo.,1,2);
+	%if %upcase(&geo.) = TR00 %then %do;
+	stc = substr(geo2000,1,2);
+	if stc = "11";
+	drop stc;
+	%end;
+	%else %if %upcase(&geo.) = TR10 %then %do;
+	stc = substr(geo2010,1,2);
 	if stc = "11";
 	drop stc;
 	%end;
