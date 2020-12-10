@@ -276,10 +276,14 @@ run;
 %ncdbloop (acs,acs);
 %ncdbloop (prevacs,prevacs);
 
-
+proc sort data = Sales_sum&geosuf._long_allyr; by &geo. timeframe; run; 
+proc sort data = Hmda_sum&geosuf._long_allyr; by &geo. timeframe; run; 
+proc sort data = fcl&geosuf._long_allyr; by &geo. timeframe; run; 
+proc sort data = Permits_sum&geosuf._long_allyr; by &geo. timeframe; run; 
+  
 data dcdata_&topic.&geosuf.;
 	merge Sales_sum&geosuf._long_allyr Hmda_sum&geosuf._long_allyr fcl&geosuf._long_allyr Permits_sum&geosuf._long_allyr;
-	by &geo.;
+	by &geo. timeframe;
 	&geo._nf = &geo.;
 run;
 

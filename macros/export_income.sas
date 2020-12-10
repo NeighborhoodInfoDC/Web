@@ -346,12 +346,12 @@ data ch_&topic.&geosuf._2000_ACS;
 run;
 
 
-proc sort data = Tanf_sum&geosuf._long_allyr; by &geo._nf; run;
-proc sort data = Fs_sum&geosuf._long_allyr; by &geo._nf; run;
+proc sort data = Tanf_sum&geosuf._long_allyr; by &geo._nf timeframe; run;
+proc sort data = Fs_sum&geosuf._long_allyr; by &geo._nf timeframe; run;
 
 data tanf_fs&geosuf.;
 	merge Tanf_sum&geosuf._long_allyr Fs_sum&geosuf._long_allyr;
-	by &geo._nf;
+	by &geo._nf timeframe;
 run;
 
 data alldata_&topic.&geosuf.;
