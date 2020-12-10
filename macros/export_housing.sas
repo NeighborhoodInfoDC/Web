@@ -355,7 +355,6 @@ data alldata_&topic.&geosuf.;
 	sales_sf = .x;
 	MedianMrtgInc1_4m_adj = .x;
 	NumMrtgOrigHomePurchPerUnit = .x;
-	PctSubprimeConvOrigHomePur = .x;
 	forecl_ssl_1Kpcl_sf_condo = .x;
 	forecl_ssl_sf_condo = .x;
 	trustee_ssl_1Kpcl_sf_condo = .x;
@@ -406,7 +405,6 @@ data &topic.&geosuf.;
 			sales_sf = "Single-Family Homes, Number of sales"
 			MedianMrtgInc1_4m_adj = "Median borrower income"
 			NumMrtgOrigHomePurchPerUnit = "Loans per 1,000 housing units" 
-			PctSubprimeConvOrigHomePur = "% subprime loans" 
 			forecl_ssl_1Kpcl_sf_condo = "Foreclosure notice rate per 1,000" 
 			forecl_ssl_sf_condo = "SF homes/condos receiving foreclosure notice" 
 			trustee_ssl_1Kpcl_sf_condo = "Trustee deed sale rate per 1,000" 
@@ -417,8 +415,7 @@ data &topic.&geosuf.;
 		  ;
 
 	format NumOccupiedHsgUnits PctSameHouse5YearsAgo PctVacantHsgUnitsForRent PctOwnerOccupiedHsgUnits PctVacantHUForRent_m
-		   PctOwnerOccupiedHU_m NumOccupiedHsgUnits_m mprice_sf sales_sf MedianMrtgInc1_4m_adj 
-		   NumMrtgOrigHomePurchPerUnit PctSubprimeConvOrigHomePur 
+		   PctOwnerOccupiedHU_m NumOccupiedHsgUnits_m mprice_sf sales_sf MedianMrtgInc1_4m_adj NumMrtgOrigHomePurchPerUnit
 		   forecl_ssl_1Kpcl_sf_condo forecl_ssl_sf_condo trustee_ssl_1Kpcl_sf_condo trustee_ssl_sf_condo 
 	       PctAnnChgRMPriceSf_1yr PctAnnChgRMPriceSf_5yr PctAnnChgRMPriceSf_10yr permits profnum.;
 run;
@@ -445,11 +442,10 @@ data &topic.&geosuf._metadata;
 	else if name = "PctAnnChgRMPriceSf_1yr" then weborder = 12;
 	else if name = "NumMrtgOrigHomePurchPerUnit" then weborder = 13;
 	else if name = "MedianMrtgInc1_4m_adj" then weborder = 14;
-	else if name = "PctSubprimeConvOrigHomePur" then weborder = 15;
-	else if name = "forecl_ssl_sf_condo" then weborder = 16;
-	else if name = "forecl_ssl_1Kpcl_sf_condo" then weborder = 17;
-	else if name = "trustee_ssl_sf_condo" then weborder = 18;
-	else if name = "trustee_ssl_1Kpcl_sf_condo" then weborder = 19;
+	else if name = "forecl_ssl_sf_condo" then weborder = 15;
+	else if name = "forecl_ssl_1Kpcl_sf_condo" then weborder = 16;
+	else if name = "trustee_ssl_sf_condo" then weborder = 17;
+	else if name = "trustee_ssl_1Kpcl_sf_condo" then weborder = 18;
 run;
 
 /* Output the metadata */

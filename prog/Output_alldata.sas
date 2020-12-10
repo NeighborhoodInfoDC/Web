@@ -55,7 +55,7 @@
 
 
 /* Export housing data */
-%include "&_dcdata_r_path.\realprop\prog\sales_forweb.sas";
+%include "&_dcdata_default_path.\Web\macros\sales_forweb.sas";
 %include "&_dcdata_r_path.\hmda\prog\hmda_forweb.sas";
 %include "&_dcdata_default_path.\Web\macros\foreclosure_forweb.sas";
 %include "&_dcdata_default_path.\Web\macros\permits_forweb.sas";
