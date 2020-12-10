@@ -320,6 +320,7 @@ data &topic.&geosuf.;
 			PctNocomputer ="% HHs with no computing devices"
 			Pctcellularonly = "% HHs with cell data plan but no other internet"
 			Pctinternet = "% HHs with internet access"
+			Pctnointernet = "% HHs with no internet access"
 			PctHshldPhone_m = "% HHs with a phone MOE"
 			PctHshldCar_m = "% HHs with a car MOE"
 			PctBroadband_m = "% HHs with broadband internet subscription MOE"
@@ -327,6 +328,7 @@ data &topic.&geosuf.;
 			PctNocomputer_m ="% HHs with no computing devices MOE"
 			Pctcellularonly_m = "% HHs with cell data plan but no other internet MOE"
 			Pctinternet_m = "% HHs with internet access MOE"
+			Pctnointernet_m = "% HHs with no internet access MOE"
 		  ;
 
 	format PctHshldPhone PctHshldCar PctBroadband Pctcomputer Pctcellularonly Pctinternet 
