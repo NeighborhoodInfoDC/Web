@@ -23,7 +23,7 @@
 %let outfolder = hmda; /* Name of folder where output CSV will be saved */
 %let sumdata = hmda_sum; /* Summary dataset name (without geo suffix) */
 %let start = 1997; /* Start year */
-%let end = 2018; /* End year */
+%let end = 2019; /* End year */
 %let keepvars = NumMrtgOrigHomePurch1_4m HUnits 
            NumConvMrtgOrigHomePurch MedianMrtgInc1_4m ; /*NumSubprimeConvOrigHomePur  ;  Summary variables to keep and transpose */
 

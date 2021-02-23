@@ -56,7 +56,7 @@
 
 /* Export housing data */
 %include "&_dcdata_default_path.\Web\macros\sales_forweb.sas";
-%include "&_dcdata_r_path.\hmda\prog\hmda_forweb.sas";
+%include "&_dcdata_default_path.\Web\macros\hmda_forweb.sas";
 %include "&_dcdata_default_path.\Web\macros\foreclosure_forweb.sas";
 %include "&_dcdata_default_path.\Web\macros\permits_forweb.sas";
 
@@ -119,7 +119,7 @@
 
 
 /* Export safety data */
-%include "&_dcdata_r_path.\Police\Prog\Crimes_forweb.sas";
+%include "&_dcdata_default_path.\Web\macros\Crimes_forweb.sas";
 %export_safety (geo2010);
 %export_safety (city);
 %export_safety (county);
