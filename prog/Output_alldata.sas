@@ -24,7 +24,7 @@
 %let acsyr = 2014_18; 
 %let prevacsyr = 2010_14;
 
-** Inflation base year **;
+** Inflation base year - use latest ACS year**;
 %let inc_dollar_yr = 2018;
 
 
@@ -78,7 +78,7 @@
 %export_connection (anc12);
 %export_connection (psa12);
 %export_connection (zip);
-%export_connection (cl17);
+%export_connection (cl17); 
 
 
 /* Export income data */

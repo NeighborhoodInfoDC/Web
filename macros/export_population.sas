@@ -151,7 +151,7 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 	format start_date end_date date9. ;
 
 	/* Unformatted tract ID */
-	&geo._nf = &geo.;
+	%geo_nf;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
 	/* County ID */
@@ -168,7 +168,7 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 	length timeframe $ 15;
 	set &prevacsin.;
 
-	&geo._nf = &geo.;
+	%geo_nf;
 
 	timeframe = "&py_lbl." ;
 
@@ -198,7 +198,7 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 	length timeframe $ 15;
 	set &acsin.;
 
-	&geo._nf = &geo.;
+	%geo_nf;
 
 	timeframe = "&y_lbl." ;
 
@@ -352,7 +352,7 @@ data ch_&topic.&geosuf._1990_2000;
 	set ch_&topic.&geosuf.;
 
 	/* Unformatted tract ID */
-	&geo._nf = &geo.;
+	%geo_nf;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
 	ucounty=substr(geo2010,1,5);
@@ -380,7 +380,7 @@ data ch_&topic.&geosuf._2000_2010;
 	set ch_&topic.&geosuf.;
 
 	/* Unformatted tract ID */
-	&geo._nf = &geo.;
+	%geo_nf;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
 	ucounty=substr(geo2010,1,5);

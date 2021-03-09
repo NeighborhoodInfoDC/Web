@@ -158,7 +158,7 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 	format start_date end_date date9. ;
 
 	/* Unformatted tract ID */
-	&geo._nf = &geo.;
+	%geo_nf;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
 	/* County ID */
@@ -175,7 +175,7 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 	length timeframe $ 15;
 	set &prevacsin.;
 
-	&geo._nf = &geo.;
+	%geo_nf;
 
 	timeframe = "&py_lbl." ;
 
@@ -199,7 +199,7 @@ data Ncdb_&ncdbyr._&topic.&geosuf.;
 	length timeframe $ 15;
 	set &acsin.;
 
-	&geo._nf = &geo.;
+	%geo_nf;
 
 	timeframe = "&y_lbl." ;
 
@@ -284,7 +284,7 @@ proc sort data = Permits_sum&geosuf._long_allyr; by &geo. timeframe; run;
 data dcdata_&topic.&geosuf.;
 	merge Sales_sum&geosuf._long_allyr Hmda_sum&geosuf._long_allyr fcl&geosuf._long_allyr Permits_sum&geosuf._long_allyr;
 	by &geo. timeframe;
-	&geo._nf = &geo.;
+	%geo_nf;
 run;
 
 
@@ -318,7 +318,7 @@ data PctAnnChgRMPriceSf_&y.&geosuf.;
 	length timeframe $ 15;
 	set price_change&geosuf.;
 
-	&geo._nf = &geo.;
+	%geo_nf;
 
 	%if %upcase( &source_geo ) = GEO2010 %then %do;
 	ucounty=substr(geo2010,1,5);
